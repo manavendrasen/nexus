@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "npx prettier --write \"**/*.{js,jsx,json,ts,tsx,md}\""
   },
   "dependencies": {
     "@types/node": "20.2.5",
