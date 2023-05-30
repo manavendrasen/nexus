@@ -14,6 +14,7 @@ interface AppwriteStore {
     secret: string
   ) => Promise<Models.Token>;
   authLoading: boolean;
+  currentUserId: string | null;
 }
 
 type SignUpFormState = {
@@ -99,7 +100,7 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
 
     try {
       return await accountService.createVerification(
-        "http://localhost:3000/sign-up/confirm"
+        `${process.env.AUTH_CALLBACK_BASE_URL}/sign-up/confirm`
       );
     } catch (error) {
       console.error(error);
@@ -116,8 +117,8 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
     }
 
     try {
-      const response = accountService.updateVerification(userId, secret);
-      // set({ currentUserId: response.userId });
+      const response = await accountService.updateVerification(userId, secret);
+      set({ currentUserId: response.userId });
       return response;
     } catch (error) {
       console.error(error);
