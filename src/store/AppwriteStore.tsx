@@ -6,15 +6,13 @@ interface AppwriteStore {
   accountService: Account | null;
   databaseService: Databases | null;
   init: () => void;
-  signUp: (data: SignUpFormState) => Promise<ID>;
-  login: (data: LoginFormState) => Promise<ID>;
-  sendVerificationEmail: () => Promise<Models.Token>;
-  confirmVerificationEmail: (
-    userId: string,
-    secret: string
-  ) => Promise<Models.Token>;
+  signUp: (data: SignUpFormState) => Promise<Models.User<Models.Preferences>>;
+  login: (data: LoginFormState) => Promise<Models.Session>;
+  sendVerificationEmail: () => void;
+  confirmVerificationEmail: (userId: string, secret: string) => void;
+  fetchMe: () => void;
   authLoading: boolean;
-  currentUserId: string | null;
+  me: Models.User<Models.Preferences> | null;
 }
 
 type SignUpFormState = {
@@ -40,11 +38,16 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
   accountService: null as Account | null,
   databaseService: null as Databases | null,
   authLoading: false,
-  currentUserId: null,
+  me: {
+    name: "Manavendra Sen",
+    email: "manavendra4288@gmail.com",
+    emailVerification: true,
+  } as Models.User<Models.Preferences> | null,
   init: () => {
     const client = createClient();
     const account = new Account(client);
     const database = new Databases(client);
+
     set({
       clientService: client,
       accountService: account,
@@ -99,8 +102,10 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
     }
 
     try {
-      return await accountService.createVerification(
-        `${process.env.AUTH_CALLBACK_URL}/sign-up/confirm`
+      console.log(process.env.NEXT_PUBLIC_AUTH_CALLBACK_URL);
+
+      await accountService.createVerification(
+        `${process.env.NEXT_PUBLIC_AUTH_CALLBACK_URL}/sign-up/confirm`
       );
     } catch (error) {
       console.error(error);
@@ -117,12 +122,27 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
     }
 
     try {
-      const response = await accountService.updateVerification(userId, secret);
-      set({ currentUserId: response.userId });
-      return response;
+      await accountService.updateVerification(userId, secret);
     } catch (error) {
       console.error(error);
       throw new Error("Could not verify email");
+    } finally {
+      set({ authLoading: false });
+    }
+  },
+  fetchMe: async () => {
+    set({ authLoading: true });
+    const accountService = get().accountService;
+    if (!accountService) {
+      throw new Error("Account service not initialized");
+    }
+
+    try {
+      const user = await accountService.get();
+      set({ me: user });
+    } catch (error) {
+      console.error(error);
+      throw new Error("Could not get user");
     } finally {
       set({ authLoading: false });
     }

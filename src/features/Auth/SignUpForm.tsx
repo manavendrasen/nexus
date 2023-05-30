@@ -44,10 +44,9 @@ export const SignUpForm = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const signUpResponse = await signUp(values);
-      const loginResponse = await login(values);
-      const verificationEmailResponse = await sendVerificationEmail();
-      console.log(loginResponse, signUpResponse, verificationEmailResponse);
+      await signUp(values);
+      await login(values);
+      sendVerificationEmail();
       setIsSignUpComplete(true);
     } catch (error) {
       errorAlert("Uh oh! Something went wrong.");

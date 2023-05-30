@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,8 +20,9 @@ import useAppwrite from "@/store/AppwriteStore";
 import { useAlert } from "@/components/AlertProvider/AlertProvider";
 
 export const LoginForm = () => {
-  const { login, authLoading } = useAppwrite();
+  const { login, authLoading, fetchMe } = useAppwrite();
   const { errorAlert } = useAlert();
+  const router = useRouter();
 
   const formSchema = z.object({
     email: z.string().email(),
@@ -37,8 +39,9 @@ export const LoginForm = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await login(values);
-      console.log(response);
+      await login(values);
+      fetchMe();
+      router.push("/dashboard");
     } catch (error) {
       errorAlert("Uh oh! Something went wrong.");
     }
