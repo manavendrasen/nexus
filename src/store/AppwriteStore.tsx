@@ -100,7 +100,7 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
 
     try {
       return await accountService.createVerification(
-        `${process.env.AUTH_CALLBACK_BASE_URL}/sign-up/confirm`
+        `${process.env.AUTH_CALLBACK_URL}/sign-up/confirm`
       );
     } catch (error) {
       console.error(error);
