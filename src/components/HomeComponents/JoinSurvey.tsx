@@ -14,6 +14,7 @@ export const JoinSurvey: React.FC<JoinSurveyProps> = () => {
     <div className="flex gap-2 items-center">
       <Input placeholder="Enter Survey ID" ref={inputRef} />
       <Button
+        variant="secondary"
         onClick={() => {
           console.log("inputRef.current?.value", inputRef.current?.value);
 
