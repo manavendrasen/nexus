@@ -58,7 +58,7 @@ function Home() {
             <nav className="flex flex-grow">
               <ul className="flex flex-grow justify-end flex-wrap items-center">
                 <li>
-                  <Link href="/sign-up">
+                  <Link href="/login">
                     <Button>
                       <p className="mr-2">Create Survey</p>{" "}
                       <ArrowRight size={18} />
@@ -118,7 +118,7 @@ function Home() {
                 </h1>
                 <div className="max-w-3xl mx-auto">
                   <p
-                    className="text-base text-gray-600 mb-8"
+                    className="text-base text-slate-600 mb-8"
                     data-aos="zoom-y-out"
                     data-aos-delay="150"
                   >
@@ -142,13 +142,13 @@ function Home() {
       <footer>
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           {/* Bottom area */}
-          <div className="md:flex md:items-center md:justify-between py-4 md:py-8 border-t border-gray-200">
+          <div className="md:flex md:items-center md:justify-between py-4 md:py-8 border-t border-slate-200">
             {/* Social links */}
             <ul className="flex mb-4 md:order-1 md:ml-4 md:mb-0">
               <li>
                 <Link
                   href="#"
-                  className="flex justify-center items-center text-gray-600 hover:text-gray-900 bg-white hover:bg-white-100 rounded-full shadow transition duration-150 ease-in-out"
+                  className="flex justify-center items-center text-slate-600 hover:text-slate-900 bg-white hover:bg-white-100 rounded-full shadow transition duration-150 ease-in-out"
                   aria-label="Twitter"
                 >
                   <svg
@@ -163,7 +163,7 @@ function Home() {
               <li className="ml-4">
                 <Link
                   href="#"
-                  className="flex justify-center items-center text-gray-600 hover:text-gray-900 bg-white hover:bg-white-100 rounded-full shadow transition duration-150 ease-in-out"
+                  className="flex justify-center items-center text-slate-600 hover:text-slate-900 bg-white hover:bg-white-100 rounded-full shadow transition duration-150 ease-in-out"
                   aria-label="Github"
                 >
                   <svg
@@ -178,7 +178,7 @@ function Home() {
               <li className="ml-4">
                 <Link
                   href="#"
-                  className="flex justify-center items-center text-gray-600 hover:text-gray-900 bg-white hover:bg-white-100 rounded-full shadow transition duration-150 ease-in-out"
+                  className="flex justify-center items-center text-slate-600 hover:text-slate-900 bg-white hover:bg-white-100 rounded-full shadow transition duration-150 ease-in-out"
                   aria-label="Facebook"
                 >
                   <svg
@@ -193,7 +193,7 @@ function Home() {
             </ul>
 
             {/* Copyrights note */}
-            <div className="text-sm text-gray-600 mr-4">
+            <div className="text-sm text-slate-600 mr-4">
               Made by{" "}
               <a
                 className="text-blue-600 hover:underline"

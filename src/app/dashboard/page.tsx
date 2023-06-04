@@ -68,7 +68,7 @@ export default function Dashboard() {
     );
   } else {
     return (
-      <div className="bg-gray-50 min-h-screen relative">
+      <div className="bg-slate-50 min-h-screen relative">
         <Navbar title="Nexux Surveys" />
         {/* <div className="px-12 py-12">
           <h1>Dashboard</h1>
@@ -76,7 +76,7 @@ export default function Dashboard() {
         </div> */}
 
         {/* Container */}
-        <div className="container lg:py-4 lg:px-40 px-8 py-4 mt-4 bg-gray-50">
+        <div className="container lg:py-4 lg:px-40 px-8 py-4 mt-4 bg-slate-50">
           {/* Create Survey */}
           <div className="flex items-center justify-end mb-8 gap-4">
             <Input
