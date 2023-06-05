@@ -50,7 +50,7 @@ export const TextQuestion: React.FC<QuestionProps> = ({ question, index }) => {
 
   return (
     <div
-      className="px-8 py-4 rounded-sm bg-white border-2 border-slate-200 relative"
+      className="px-6 py-4 rounded-sm bg-white border-2 border-slate-200 relative"
       onMouseEnter={() => {
         if (!isEditMode) {
           setShowEditButton(true);
@@ -67,37 +67,41 @@ export const TextQuestion: React.FC<QuestionProps> = ({ question, index }) => {
         }
       }}
     >
+      {/* <span className="mt-2">{index + 1}. </span> */}
       {isEditMode ? (
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <FormField
-              control={form.control}
-              name="text"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
+        <div className="flex-1">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <FormField
+                control={form.control}
+                name="text"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div className="flex justify-between items-center mt-4">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  form.reset();
-                  setIsEditMode(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button type="submit">Save</Button>
-            </div>
-          </form>
-        </Form>
+              <div className="flex justify-between items-center mt-4">
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    form.reset();
+                    setIsEditMode(false);
+                    setShowEditButton(false);
+                  }}
+                >
+                  Delete
+                </Button>
+                <Button type="submit">Save</Button>
+              </div>
+            </form>
+          </Form>
+        </div>
       ) : (
         <div>
           {showEditButton && (

@@ -58,7 +58,7 @@ export const ObjectiveQuestion: React.FC<QuestionProps> = ({
 
   return (
     <div
-      className="px-8 py-4 rounded-sm bg-white border-2 border-slate-200 relative"
+      className="px-6 py-4 rounded-sm bg-white border-2 border-slate-200 relative"
       onMouseEnter={() => {
         if (!isEditMode) {
           setShowEditButton(true);
@@ -75,26 +75,14 @@ export const ObjectiveQuestion: React.FC<QuestionProps> = ({
         }
       }}
     >
+      {/* <span>{index + 3}. </span> */}
       {isEditMode ? (
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <FormField
-              control={form.control}
-              name="text"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="grid grid-cols-2 gap-4 my-4">
+        <div className="flex-1">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
-                name="option1"
+                name="text"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -105,60 +93,76 @@ export const ObjectiveQuestion: React.FC<QuestionProps> = ({
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="option2"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
+              <div className="grid grid-cols-2 gap-4 my-4">
+                <FormField
+                  control={form.control}
+                  name="option1"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="option3"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="option2"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="option4"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="option3"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="flex justify-between items-center">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  form.reset();
-                  setIsEditMode(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button type="submit">Save</Button>
-            </div>
-          </form>
-        </Form>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="option4"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex justify-between items-center">
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    form.reset();
+                    setIsEditMode(false);
+                    setShowEditButton(false);
+                  }}
+                >
+                  Delete
+                </Button>
+                <Button type="submit">Save</Button>
+              </div>
+            </form>
+          </Form>
+        </div>
       ) : (
         <div>
           {showEditButton && (
