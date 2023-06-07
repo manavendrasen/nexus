@@ -4,47 +4,25 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useAppwrite from "@/store/AppwriteStore";
 import { Navbar } from "@/components/Navbar/Navbar";
-import { Survey } from "@/components/Survey/Survey";
 import { Button } from "@/components/Button/Button";
 import { Input } from "@/components/Input/Input";
 import { Plus } from "lucide-react";
-
-const SurveyData = [
-  {
-    title: "Survey 1",
-    responseCount: 10,
-    slug: "survey-1",
-    status: "ACTIVE",
-  },
-  {
-    title: "Survey 2",
-    responseCount: 20,
-    slug: "survey-2",
-    status: "INACTIVE",
-  },
-  {
-    title: "Survey 3",
-    responseCount: 30,
-    slug: "survey-3",
-    status: "ACTIVE",
-  },
-  {
-    title: "Survey 4",
-    responseCount: 40,
-    slug: "survey-4",
-    status: "INACTIVE",
-  },
-];
+import { CreateSurvey } from "@/features/Survey/CreateSurvey";
+import useSurvey from "@/store/SurveyStore";
+import SurveyType from "@/constants/Survey";
+import { Survey } from "@/components/Survey/Survey";
+import { Skeleton } from "@/components/Skeleton/Skeleton";
 
 export default function Dashboard() {
   const { me, fetchMe } = useAppwrite();
-  const [surveyData, setSurveyData] = useState(SurveyData);
+  const { allMySurveys, getSurveys, loading } = useSurvey();
+  const [surveyData, setSurveyData] = useState<SurveyType[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   const router = useRouter();
 
   useEffect(() => {
-    const filtered = SurveyData.filter(survey => {
+    const filtered = allMySurveys.filter(survey => {
       return (
         survey.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         survey.slug.toLowerCase().includes(searchTerm.toLowerCase())
@@ -53,9 +31,19 @@ export default function Dashboard() {
     setSurveyData(filtered);
 
     if (searchTerm === "") {
-      setSurveyData(SurveyData);
+      setSurveyData(allMySurveys);
     }
-  }, [searchTerm, surveyData]);
+  }, [searchTerm, surveyData, allMySurveys]);
+
+  useEffect(() => {
+    try {
+      getSurveys();
+      setSurveyData(allMySurveys);
+    } catch (error) {
+      console.log(error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!me) {
     router.back();
@@ -80,28 +68,46 @@ export default function Dashboard() {
           {/* Create Survey */}
           <div className="flex items-center justify-end mb-8 gap-4">
             <Input
+              disabled={loading}
               placeholder="Search"
               className="bg-white"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
             />
-            <Button>
-              <Plus size={16} /> <p className="w-max ml-2">Add New</p>
-            </Button>
+            <CreateSurvey />
           </div>
 
           {/* Surveys */}
-          <div className="grid grid-cols-3 gap-6">
-            {surveyData.map(survey => (
-              <Survey
-                key={survey.slug}
-                title={survey.title}
-                responseCount={survey.responseCount}
-                slug={survey.slug}
-                status={survey.status}
-              />
-            ))}
-          </div>
+          {loading ? (
+            <div className="grid grid-cols-3 gap-6">
+              <Skeleton className="h-48 w-full" />
+              <Skeleton className="h-48 w-full" />
+              <Skeleton className="h-48 w-full" />
+              <Skeleton className="h-48 w-full" />
+              <Skeleton className="h-48 w-full" />
+              <Skeleton className="h-48 w-full" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 gap-6">
+              {surveyData.length === 0 && (
+                <div className="col-span-3 flex flex-col items-center justify-center">
+                  <p className="text-xl font-bold mb-4">No surveys found</p>
+                  <p className="text-gray-500 text-sm">
+                    Create a new survey to get started.
+                  </p>
+                </div>
+              )}
+              {surveyData.map(survey => (
+                <Survey
+                  key={survey.slug}
+                  title={survey.title}
+                  responseCount={survey.responseCount || 0}
+                  slug={survey.slug}
+                  status={survey.status || ""}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     );

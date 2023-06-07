@@ -14,6 +14,7 @@ export const AppwriteProvider: React.FC<AppwriteProviderProps> = ({
 
   useEffect(() => {
     init();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

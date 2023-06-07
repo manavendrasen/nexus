@@ -15,6 +15,27 @@ export const Survey: React.FC<SurveyProps> = ({
   slug,
   status,
 }) => {
+  
+  let statusMessage;
+  switch (status) {
+    case "DRAFT":
+      statusMessage = (
+        <p className="text-xs font-semibold text-orange-500">{status}</p>
+      );
+      break;
+    case "COMPLETE":
+      statusMessage = (
+        <p className="text-xs font-semibold text-slate-500">{status}</p>
+      );
+      break;
+    case "ACTIVE":
+      statusMessage = (
+        <p className="text-xs font-semibold text-green-500">{status}</p>
+      );
+      break;
+    default:
+      break;
+  }
   return (
     <Link href={`survey/${slug}`}>
       <div className="flex flex-col gap-1 border-2 bg-white border-slate-100 rounded-sm p-6 hover:border-slate-400">
@@ -26,11 +47,7 @@ export const Survey: React.FC<SurveyProps> = ({
           <p>
             {responseCount} {responseCount === 1 ? "response" : "responses"}
           </p>
-          {status === "ACTIVE" ? (
-            <p className="text-xs font-semibold text-green-500">{status}</p>
-          ) : (
-            <p className="text-xs font-semibold text-slate-500">{status}</p>
-          )}
+          {statusMessage}
         </div>
       </div>
     </Link>

@@ -1,8 +1,10 @@
 "use client";
 
+import { useAlert } from "@/components/AlertProvider/AlertProvider";
 import { Button } from "@/components/Button/Button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -24,15 +26,18 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/Tabs/Tabs";
+import useSurvey from "@/store/SurveyStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 interface AddQuestionProps {}
 
 export const AddQuestion: React.FC<AddQuestionProps> = ({}) => {
+  const { addQuestion, questions, createQuestion } = useSurvey();
+  const { successAlert } = useAlert();
   const objectiveFormSchema = z.object({
     text: z.string().min(5).max(100),
     option1: z.string().min(3),
@@ -52,28 +57,50 @@ export const AddQuestion: React.FC<AddQuestionProps> = ({}) => {
     },
   });
 
-  const textFormSchema = z.object({
-    text: z.string().min(5).max(100),
-  });
+  // const textFormSchema = z.object({
+  //   text: z.string().min(5).max(100),
+  // });
 
-  const textForm = useForm<z.infer<typeof textFormSchema>>({
-    resolver: zodResolver(textFormSchema),
-    defaultValues: {
-      text: "",
-    },
-  });
+  // const textForm = useForm<z.infer<typeof textFormSchema>>({
+  //   resolver: zodResolver(textFormSchema),
+  //   defaultValues: {
+  //     text: "",
+  //   },
+  // });
 
   const onSubmitObjective = async (
     values: z.infer<typeof objectiveFormSchema>
   ) => {
-    console.log(values);
+    // TODO: add question mark
+    addQuestion({
+      index: questions.length + 4,
+      type: "OPTION",
+      text: values.text,
+      options: [values.option1, values.option2, values.option3, values.option4],
+    });
+
+    createQuestion({
+      index: questions.length + 4,
+      type: "OPTION",
+      text: values.text,
+      options: [values.option1, values.option2, values.option3, values.option4],
+    });
+
+    console.log({
+      index: questions.length + 4,
+      type: "OPTION",
+      text: values.text,
+      options: [values.option1, values.option2, values.option3, values.option4],
+    });
+
     objectiveForm.reset();
+    successAlert("Added Question");
   };
 
-  const onSubmitText = async (values: z.infer<typeof textFormSchema>) => {
-    console.log(values);
-    textForm.reset();
-  };
+  // const onSubmitText = async (values: z.infer<typeof textFormSchema>) => {
+  //   console.log(values);
+  //   textForm.reset();
+  // };
 
   return (
     <Dialog>
@@ -85,106 +112,104 @@ export const AddQuestion: React.FC<AddQuestionProps> = ({}) => {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Question</DialogTitle>
-          <DialogDescription>save when you&apos;re done.</DialogDescription>
+          <DialogDescription>
+            Objective questions will be used to visualize the responses.
+          </DialogDescription>
         </DialogHeader>
-        <Tabs defaultValue="option">
+        {/* <Tabs defaultValue="option">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="option">Objective Question</TabsTrigger>
             <TabsTrigger value="text">Text Question</TabsTrigger>
           </TabsList>
-          <TabsContent value="option">
-            <Form {...objectiveForm}>
-              <form onSubmit={objectiveForm.handleSubmit(onSubmitObjective)}>
-                <FormField
-                  control={objectiveForm.control}
-                  name="text"
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className="flex flex-col gap-2 my-4">
-                        <FormControl>
-                          <Input placeholder="Question" {...field} />
-                        </FormControl>
-                        <FormMessage />
+          <TabsContent value="option"> */}
+        <Form {...objectiveForm}>
+          <form onSubmit={objectiveForm.handleSubmit(onSubmitObjective)}>
+            <FormField
+              control={objectiveForm.control}
+              name="text"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex flex-col gap-2 my-2">
+                    <FormControl>
+                      <Input placeholder="Question" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+            <div className="grid grid-cols-2 gap-4 my-4">
+              <FormField
+                control={objectiveForm.control}
+                name="option1"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Option 1" {...field} />
+                    </FormControl>
 
-                        <FormDescription>
-                          Text questions can be used to gather long-form
-                          responses from your participants. For the
-                          visualization only Objective questions will be used.
-                        </FormDescription>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-                <div className="grid grid-cols-2 gap-4 my-4">
-                  <FormField
-                    control={objectiveForm.control}
-                    name="option1"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input placeholder="Option 1" {...field} />
-                        </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={objectiveForm.control}
+                name="option2"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Option 2" {...field} />
+                    </FormControl>
 
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={objectiveForm.control}
-                    name="option2"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input placeholder="Option 2" {...field} />
-                        </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={objectiveForm.control}
+                name="option3"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Option 3" {...field} />
+                    </FormControl>
 
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={objectiveForm.control}
-                    name="option3"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input placeholder="Option 3" {...field} />
-                        </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={objectiveForm.control}
+                name="option4"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Option 4" {...field} />
+                    </FormControl>
 
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={objectiveForm.control}
-                    name="option4"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input placeholder="Option 4" {...field} />
-                        </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="flex justify-between items-center">
-                  <Button
-                    variant="secondary"
-                    type="reset"
-                    onClick={() => {
-                      textForm.reset();
-                      objectiveForm.reset();
-                    }}
-                  >
-                    Reset
-                  </Button>
-                  <Button type="submit">Save</Button>
-                </div>
-              </form>
-            </Form>
-          </TabsContent>
+            <div className="flex justify-between items-center">
+              <Button
+                variant="secondary"
+                type="reset"
+                onClick={() => {
+                  // textForm.reset();
+                  objectiveForm.reset();
+                }}
+              >
+                Reset
+              </Button>
+              <Button type="submit">Save</Button>
+            </div>
+          </form>
+        </Form>
+
+        {/* </TabsContent>
           <TabsContent value="text">
             <Form {...textForm}>
               <form onSubmit={textForm.handleSubmit(onSubmitText)}>
@@ -225,7 +250,7 @@ export const AddQuestion: React.FC<AddQuestionProps> = ({}) => {
               </form>
             </Form>
           </TabsContent>
-        </Tabs>
+        </Tabs> */}
       </DialogContent>
     </Dialog>
   );

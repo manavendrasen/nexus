@@ -2,9 +2,9 @@ import { create } from "zustand";
 import { Client, Account, ID, Databases, Models } from "appwrite";
 
 interface AppwriteStore {
-  clientService: Client | null;
-  accountService: Account | null;
-  databaseService: Databases | null;
+  clientService?: Client;
+  accountService?: Account;
+  databaseService?: Databases;
   init: () => void;
   signUp: (data: SignUpFormState) => Promise<Models.User<Models.Preferences>>;
   login: (data: LoginFormState) => Promise<Models.Session>;
@@ -12,7 +12,11 @@ interface AppwriteStore {
   confirmVerificationEmail: (userId: string, secret: string) => void;
   fetchMe: () => void;
   authLoading: boolean;
-  me: Models.User<Models.Preferences> | null;
+  me?: Models.User<Models.Preferences>;
+
+  // survey
+  createMagicURLSession: (email: string) => void;
+  updateMagicURLSession: (userId: string, secret: string) => void;
 }
 
 type SignUpFormState = {
@@ -34,15 +38,11 @@ const createClient = () => {
 };
 
 const useAppwrite = create<AppwriteStore>()((set, get) => ({
-  clientService: null as Client | null,
-  accountService: null as Account | null,
-  databaseService: null as Databases | null,
+  clientService: undefined,
+  accountService: undefined,
+  databaseService: undefined,
   authLoading: false,
-  me: {
-    name: "Manavendra Sen",
-    email: "manavendra4288@gmail.com",
-    emailVerification: true,
-  } as Models.User<Models.Preferences> | null,
+  me: undefined,
   init: () => {
     const client = createClient();
     const account = new Account(client);
@@ -53,6 +53,7 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
       accountService: account,
       databaseService: database,
     });
+    console.log("Appwrite initialized");
   },
   signUp: async (data: SignUpFormState) => {
     set({ authLoading: true });
@@ -143,6 +144,38 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
     } catch (error) {
       console.error(error);
       throw new Error("Could not get user");
+    } finally {
+      set({ authLoading: false });
+    }
+  },
+  createMagicURLSession: async email => {
+    set({ authLoading: true });
+    const accountService = get().accountService;
+    if (!accountService) {
+      throw new Error("Account service not initialized");
+    }
+
+    try {
+      await accountService.createMagicURLSession(ID.unique(), email);
+    } catch (error) {
+      console.error(error);
+      throw new Error("Could not create magic URL session");
+    } finally {
+      set({ authLoading: false });
+    }
+  },
+  updateMagicURLSession: async (userId, secret) => {
+    set({ authLoading: true });
+    const accountService = get().accountService;
+    if (!accountService) {
+      throw new Error("Account service not initialized");
+    }
+
+    try {
+      await accountService.updateMagicURLSession(userId, secret);
+    } catch (error) {
+      console.error(error);
+      throw new Error("Could not update magic URL session");
     } finally {
       set({ authLoading: false });
     }

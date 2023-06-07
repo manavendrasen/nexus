@@ -14,21 +14,18 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../Button/Button";
 import { Edit } from "lucide-react";
-
-type Question = {
-  id: number;
-  text: string;
-  options: string[];
-};
+import Question from "@/constants/Question";
 
 interface QuestionProps {
   question: Question;
   index: number;
+  allowEdit?: boolean;
 }
 
 export const ObjectiveQuestion: React.FC<QuestionProps> = ({
   question,
   index,
+  allowEdit,
 }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [showEditButton, setShowEditButton] = useState(false);
@@ -44,10 +41,10 @@ export const ObjectiveQuestion: React.FC<QuestionProps> = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       text: question.text,
-      option1: question.options[0],
-      option2: question.options[1],
-      option3: question.options[2],
-      option4: question.options[3],
+      option1: question.options?.at(0),
+      option2: question.options?.at(1),
+      option3: question.options?.at(2),
+      option4: question.options?.at(3),
     },
   });
 
@@ -76,7 +73,7 @@ export const ObjectiveQuestion: React.FC<QuestionProps> = ({
       }}
     >
       {/* <span>{index + 3}. </span> */}
-      {isEditMode ? (
+      {allowEdit && isEditMode ? (
         <div className="flex-1">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -165,7 +162,7 @@ export const ObjectiveQuestion: React.FC<QuestionProps> = ({
         </div>
       ) : (
         <div>
-          {showEditButton && (
+          {allowEdit && showEditButton && (
             <div className="absolute top-3 right-3">
               <Button variant="outline">
                 <Edit size={16} className="mr-2" /> Edit
@@ -174,17 +171,17 @@ export const ObjectiveQuestion: React.FC<QuestionProps> = ({
           )}
           <div
             className={`
-					${showEditButton && "opacity-50"}  
+					${allowEdit && showEditButton && "opacity-50"}  
 					`}
           >
             <p className="mb-2">{question.text}</p>
             <div className="grid grid-cols-2 gap-2">
-              {question.options.map((option, index) => (
+              {question.options?.map((option, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <input
                     disabled
                     type="radio"
-                    name={question.id.toString()}
+                    // name={question.index.toString()}
                     value={option}
                   />
                   {option}

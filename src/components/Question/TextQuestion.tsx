@@ -14,26 +14,23 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../Button/Button";
 import { Edit } from "lucide-react";
-
-type Question = {
-  id: number;
-  text: string;
-};
+import Question from "@/constants/Question";
 
 interface QuestionProps {
   question: Question;
   index: number;
+  allowEdit?: boolean;
 }
 
-export const TextQuestion: React.FC<QuestionProps> = ({ question, index }) => {
+export const TextQuestion: React.FC<QuestionProps> = ({
+  question,
+  index,
+  allowEdit,
+}) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [showEditButton, setShowEditButton] = useState(false);
   const formSchema = z.object({
     text: z.string().min(5).max(100),
-    option1: z.string().min(3),
-    option2: z.string().min(3),
-    option3: z.string().min(3),
-    option4: z.string().min(3),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -46,6 +43,7 @@ export const TextQuestion: React.FC<QuestionProps> = ({ question, index }) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
     setIsEditMode(false);
+    setShowEditButton(false);
   };
 
   return (
@@ -68,7 +66,7 @@ export const TextQuestion: React.FC<QuestionProps> = ({ question, index }) => {
       }}
     >
       {/* <span className="mt-2">{index + 1}. </span> */}
-      {isEditMode ? (
+      {allowEdit && isEditMode ? (
         <div className="flex-1">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -86,8 +84,8 @@ export const TextQuestion: React.FC<QuestionProps> = ({ question, index }) => {
                 )}
               />
 
-              <div className="flex justify-between items-center mt-4">
-                <Button
+              <div className="flex justify-end mt-4">
+                {/* <Button
                   variant="destructive"
                   onClick={() => {
                     form.reset();
@@ -96,7 +94,7 @@ export const TextQuestion: React.FC<QuestionProps> = ({ question, index }) => {
                   }}
                 >
                   Delete
-                </Button>
+                </Button> */}
                 <Button type="submit">Save</Button>
               </div>
             </form>
@@ -104,7 +102,7 @@ export const TextQuestion: React.FC<QuestionProps> = ({ question, index }) => {
         </div>
       ) : (
         <div>
-          {showEditButton && (
+          {allowEdit && showEditButton && (
             <div className="absolute top-1/2 right-3 -translate-y-1/2">
               <Button variant="outline">
                 <Edit size={16} className="mr-2" /> Edit
@@ -113,7 +111,7 @@ export const TextQuestion: React.FC<QuestionProps> = ({ question, index }) => {
           )}
           <div
             className={`
-					${showEditButton && "opacity-50"}  
+					${allowEdit && showEditButton && "opacity-50"}  
 					`}
           >
             <p>{question.text}</p>

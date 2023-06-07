@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
@@ -20,7 +20,7 @@ import useAppwrite from "@/store/AppwriteStore";
 import { useAlert } from "@/components/AlertProvider/AlertProvider";
 
 export const LoginForm = () => {
-  const { login, authLoading, fetchMe } = useAppwrite();
+  const { login, authLoading, fetchMe, me } = useAppwrite();
   const { errorAlert } = useAlert();
   const router = useRouter();
 
@@ -36,6 +36,12 @@ export const LoginForm = () => {
       password: "",
     },
   });
+
+  useEffect(() => {
+    if (me) {
+      router.push("/dashboard");
+    }
+  }, [me, router]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
