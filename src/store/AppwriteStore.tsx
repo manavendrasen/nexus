@@ -6,11 +6,11 @@ interface AppwriteStore {
   accountService?: Account;
   databaseService?: Databases;
   init: () => void;
-  signUp: (data: SignUpFormState) => Promise<Models.User<Models.Preferences>>;
-  login: (data: LoginFormState) => Promise<Models.Session>;
+  signUp: (data: SignUpFormState) => Promise<void>;
+  login: (data: LoginFormState, callback: () => void) => Promise<void>;
   sendVerificationEmail: () => void;
   confirmVerificationEmail: (userId: string, secret: string) => void;
-  fetchMe: () => void;
+  // fetchMe: () => Promise<void>;
   authLoading: boolean;
   me?: Models.User<Models.Preferences>;
 
@@ -66,7 +66,7 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
     }
 
     try {
-      return await accountService.create(
+      await accountService.create(
         ID.unique(),
         data.email,
         data.password,
@@ -79,7 +79,7 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
       set({ authLoading: false });
     }
   },
-  login: async (data: LoginFormState) => {
+  login: async (data: LoginFormState, callback) => {
     set({ authLoading: true });
     const accountService = get().accountService;
     if (!accountService) {
@@ -87,7 +87,10 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
     }
 
     try {
-      return await accountService.createEmailSession(data.email, data.password);
+      await accountService.createEmailSession(data.email, data.password);
+      const me = await accountService.get();
+      set({ me });
+      callback();
     } catch (error) {
       console.error(error);
       throw new Error("Could not login");
@@ -131,23 +134,23 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
       set({ authLoading: false });
     }
   },
-  fetchMe: async () => {
-    set({ authLoading: true });
-    const accountService = get().accountService;
-    if (!accountService) {
-      throw new Error("Account service not initialized");
-    }
+  // fetchMe: async () => {
+  //   set({ authLoading: true });
+  //   const accountService = get().accountService;
+  //   if (!accountService) {
+  //     throw new Error("Account service not initialized");
+  //   }
 
-    try {
-      const user = await accountService.get();
-      set({ me: user });
-    } catch (error) {
-      console.error(error);
-      throw new Error("Could not get user");
-    } finally {
-      set({ authLoading: false });
-    }
-  },
+  //   try {
+  //     const user = await accountService.get();
+  //     set({ me: user });
+  //   } catch (error) {
+  //     console.error(error);
+  //     throw new Error("Could not get user");
+  //   } finally {
+  //     set({ authLoading: false });
+  //   }
+  // },
   createMagicURLSession: async email => {
     set({ authLoading: true });
     const accountService = get().accountService;

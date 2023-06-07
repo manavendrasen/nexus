@@ -20,7 +20,7 @@ import useAppwrite from "@/store/AppwriteStore";
 import { useAlert } from "@/components/AlertProvider/AlertProvider";
 
 export const LoginForm = () => {
-  const { login, authLoading, fetchMe, me } = useAppwrite();
+  const { login, authLoading } = useAppwrite();
   const { errorAlert } = useAlert();
   const router = useRouter();
 
@@ -37,17 +37,17 @@ export const LoginForm = () => {
     },
   });
 
-  useEffect(() => {
-    if (me) {
-      router.push("/dashboard");
-    }
-  }, [me, router]);
+  // useEffect(() => {
+  //   if (me) {
+  //     router.push("/dashboard");
+  //   }
+  // }, [me, router]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await login(values);
-      fetchMe();
-      router.push("/dashboard");
+      await login(values, () => {
+        router.push("/dashboard");
+      });
     } catch (error) {
       errorAlert("Uh oh! Something went wrong.");
     }

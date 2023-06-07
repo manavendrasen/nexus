@@ -17,9 +17,7 @@ import {
 import { AddQuestion } from "@/features/Question/AddQuestion";
 import useSurvey from "@/store/SurveyStore";
 import { Skeleton } from "@/components/Skeleton/Skeleton";
-import Question from "@/constants/Question";
-import { PersonalQuestions } from "@/constants/PersonalQuestions";
-import { get } from "http";
+import axios from "axios";
 
 interface SurveyPageProps {}
 
@@ -40,29 +38,19 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
 
   // TODO: Fetch survey data from server
   useEffect(() => {
-    if (!survey?.title) {
-      router.back();
+    // if (!survey?.title) {
+    //   router.push("/");
+    // }
+
+    console.log("surveyId", surveyId);
+    try {
+      getSurvey(surveyId);
+      getQuestionFromSlug(surveyId);
+    } catch (error) {
+      console.log(error);
     }
-    if (searchParams.has("new")) {
-      successAlert("Draft survey created! You can now add questions to it");
-    } else {
-      console.log("surveyId", surveyId);
-      try {
-        getSurvey(surveyId);
-        getQuestionFromSlug(surveyId);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  }, [
-    getQuestionFromSlug,
-    getSurvey,
-    router,
-    searchParams,
-    successAlert,
-    survey?.title,
-    surveyId,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /**
    * Survey data structure:
@@ -109,9 +97,13 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
     case "ACTIVE":
       action = (
         <Button
-          onClick={() => {
+          onClick={async () => {
             updateSurveyStatus("COMPLETE");
-            getSurvey(surveyId);
+            // getSurvey(surveyId);
+            const response = await axios.get(
+              `/api/survey?surveySlug=${surveyId}`
+            );
+            console.log(response);
           }}
         >
           <Check size={16} className="mr-2" /> Complete
@@ -197,29 +189,32 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
               </>
             ) : (
               <TabsContent value="questions">
-                <div className="grid grid-cols-1 gap-4 mt-4">
-                  {questions.map((question, index) => {
-                    if (question.type === "TEXT") {
-                      return (
-                        <TextQuestion
-                          key={question.text}
-                          index={index}
-                          question={question}
-                          allowEdit={survey?.status === "DRAFT"}
-                        />
-                      );
-                    } else if (question.type === "OPTION") {
-                      return (
-                        <ObjectiveQuestion
-                          key={question.text}
-                          question={question}
-                          index={index}
-                          allowEdit={survey?.status === "DRAFT"}
-                        />
-                      );
-                    }
-                  })}
-                </div>
+                {questions && (
+                  <div className="grid grid-cols-1 gap-4 mt-4">
+                    {questions.map((question, index) => {
+                      if (question.type === "TEXT") {
+                        return (
+                          <TextQuestion
+                            key={question.text}
+                            index={index}
+                            question={question}
+                            allowEdit={survey?.status === "DRAFT"}
+                          />
+                        );
+                      } else if (question.type === "OPTION") {
+                        return (
+                          <ObjectiveQuestion
+                            key={question.text}
+                            question={question}
+                            index={index}
+                            allowEdit={survey?.status === "DRAFT"}
+                          />
+                        );
+                      }
+                    })}
+                  </div>
+                )}
+
                 {survey?.status === "DRAFT" && (
                   <div className="flex justify-end mt-6">
                     <AddQuestion />

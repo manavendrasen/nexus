@@ -6,14 +6,24 @@ import useSurvey from "@/store/SurveyStore";
 import { GetUserEmail } from "@/features/Survey/GetUserEmail";
 import { TextResponse } from "@/features/Survey/TextResponse";
 import { OptionResponse } from "@/features/Survey/OptionResponse";
+import { Button } from "@/components/Button/Button";
+import axios from "axios";
 
 const SurveyPage = () => {
   const params = useParams();
-  const { getQuestionFromSlug, getSurvey, survey, questions, loading } =
-    useSurvey();
+
+  const {
+    getQuestionFromSlug,
+    getSurvey,
+    survey,
+    questions,
+    loading,
+    userEmail,
+  } = useSurvey();
   const router = useRouter();
 
   const [step, setStep] = useState(0);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [textResponses, setTextResponses] = useState(new Array<string>());
   const [optionResponses, setOptionResponses] = useState(new Array<Number>());
 
@@ -73,22 +83,6 @@ const SurveyPage = () => {
         />
       );
       break;
-    // case 1:
-    //   ui = (
-    //     <>
-    //       {/* <div className="fixed top-0 left-1/2 -translate-x-1/2 text-center space-y-4 w-full bg-white z-20 flex items-center flex-col pt-24 pb-12"> */}
-    //       <h1 className="text-2xl font-semibold">{survey?.title}</h1>
-    //       <p className="text-sm text-muted-foreground w-[500px] text-center">
-    //         {survey?.desc}
-    //       </p>
-    //       {/* </div> */}
-    //       <div className="flex flex-col justify-start items-start gap-28 pt-28"></div>
-    //     </>
-    //   );
-    //   break;
-    // case 2:
-    //   ui = <p>Step 2</p>;
-    //   break;
     default:
       break;
   }
@@ -97,10 +91,33 @@ const SurveyPage = () => {
     <>
       <div className="min-h-screen flex flex-col gap-3 justify-center items-center overflow-x-hidden py-12 relative bg-slate-50 px-8">
         {loading ? <p>Loading ..</p> : <>{ui}</>}
-        {step > 0 && form[step - 1]}
+        {!loading && step > 0 && form[step - 1]}
         {!loading && step > questions.length && (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-center">
+          <div className="space-y-4 text-center">
+            <h2 className="text-2xl font-bold">Submit the survey!</h2>
+            <Button
+              disabled={submitLoading}
+              onClick={async () => {
+                setSubmitLoading(true);
+                await axios.post("/api/survey", {
+                  response: {
+                    surveySlug: params.surveyId,
+                    userEmail,
+                    textResponses,
+                    optionResponses,
+                  },
+                });
+                setSubmitLoading(false);
+                setStep(-1);
+              }}
+            >
+              {submitLoading ? "Submitting.." : "Submit"}
+            </Button>
+          </div>
+        )}
+        {!loading && step === -1 && (
+          <div className="space-y-4 text-center">
+            <h2 className="text-2xl font-bold">
               Thanks for participating in the survey!
             </h2>
             <p className="text-muted-foreground">
@@ -110,6 +127,17 @@ const SurveyPage = () => {
           </div>
         )}
       </div>
+
+      <Button
+        onClick={async () => {
+          const response = await axios.get(
+            `/api/survey?surveySlug=${params.surveyId}`
+          );
+          console.log(JSON.stringify(response.data.response, null, 2));
+        }}
+      >
+        Result
+      </Button>
     </>
   );
 };

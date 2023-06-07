@@ -27,12 +27,14 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import useSurvey from "@/store/SurveyStore";
 import { useRouter } from "next/navigation";
+import { useAlert } from "@/components/AlertProvider/AlertProvider";
 
 interface CreateSurveyProps {}
 
 export const CreateSurvey: React.FC<CreateSurveyProps> = ({}) => {
   const { setSurvey, createSurvey, loading } = useSurvey();
   const router = useRouter();
+  const { successAlert } = useAlert();
   const formSchema = z.object({
     title: z.string().min(5).max(100),
     desc: z.string().min(5).max(100),
@@ -54,8 +56,9 @@ export const CreateSurvey: React.FC<CreateSurveyProps> = ({}) => {
       desc: values.desc,
       status: "DRAFT",
     };
-    setSurvey(newSurvey);
+    // setSurvey(newSurvey);
     createSurvey(newSurvey);
+    successAlert("Draft survey created! You can now add questions to it");
     router.push(`/survey/${newSurvey.slug}?new=true`);
   };
 

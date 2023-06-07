@@ -103,7 +103,6 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
         .getState()
         .databaseService?.listDocuments(DATABASE_ID, COLLECTION_ID_SURVEY, [
           Query.equal("slug", slug),
-          Query.equal("createdBy", useAppwrite.getState().me!.$id),
         ]);
 
       console.log("response", response);
@@ -195,6 +194,7 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
       const personalQuestionResponse = await Promise.all(
         personalQuestionPromises
       );
+
       console.log("response", response);
       console.log("personalQuestionResponse", personalQuestionResponse);
     } catch (error) {
