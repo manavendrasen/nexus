@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  const surveySlug = await request.nextUrl.searchParams.get("surveySlug");
+  const surveySlug = request.nextUrl.searchParams.get("surveySlug");
 
   if (surveySlug) {
     const response = await redis.lrange(surveySlug, 0, -1);

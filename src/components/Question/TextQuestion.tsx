@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../Button/Button";
 import { Edit } from "lucide-react";
 import Question from "@/constants/Question";
+import useSurvey from "@/store/SurveyStore";
 
 interface QuestionProps {
   question: Question;
@@ -27,6 +28,7 @@ export const TextQuestion: React.FC<QuestionProps> = ({
   index,
   allowEdit,
 }) => {
+  const { updateQuestion, loading, deleteQuestion, getSurvey } = useSurvey();
   const [isEditMode, setIsEditMode] = useState(false);
   const [showEditButton, setShowEditButton] = useState(false);
   const formSchema = z.object({
@@ -42,8 +44,20 @@ export const TextQuestion: React.FC<QuestionProps> = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
-    setIsEditMode(false);
-    setShowEditButton(false);
+    updateQuestion(
+      {
+        text: values.text,
+        type: "TEXT",
+        index: question.index,
+        options: [],
+        surveySlug: question.surveySlug,
+      },
+      () => {
+        setIsEditMode(false);
+        setShowEditButton(false);
+        getSurvey(question.surveySlug!);
+      }
+    );
   };
 
   return (
@@ -76,7 +90,7 @@ export const TextQuestion: React.FC<QuestionProps> = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input {...field} />
+                      <Input disabled={loading} {...field} />
                     </FormControl>
 
                     <FormMessage />
@@ -84,18 +98,24 @@ export const TextQuestion: React.FC<QuestionProps> = ({
                 )}
               />
 
-              <div className="flex justify-end mt-4">
-                {/* <Button
-                  variant="destructive"
+              <div className="flex justify-between items-center mt-4">
+                <Button
+                  variant="secondary"
                   onClick={() => {
                     form.reset();
+                    // deleteQuestion(question, () => {
+
+                    //   getSurvey(question.surveySlug!);
+                    // });
                     setIsEditMode(false);
                     setShowEditButton(false);
                   }}
                 >
-                  Delete
-                </Button> */}
-                <Button type="submit">Save</Button>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Saving..." : "Save"}
+                </Button>
               </div>
             </form>
           </Form>

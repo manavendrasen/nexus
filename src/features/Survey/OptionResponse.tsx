@@ -58,7 +58,7 @@ export const OptionResponse: React.FC<OptionResponseProps> = ({
             {index}. {question}
           </p>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {option.map((option, index) => (
               <div key={index}>
                 <label className="inline-flex items-center">

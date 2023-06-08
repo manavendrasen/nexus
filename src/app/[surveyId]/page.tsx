@@ -12,24 +12,13 @@ import axios from "axios";
 const SurveyPage = () => {
   const params = useParams();
 
-  const {
-    getQuestionFromSlug,
-    getSurvey,
-    survey,
-    questions,
-    loading,
-    userEmail,
-  } = useSurvey();
+  const { getSurvey, survey, questions, loading, userEmail } = useSurvey();
   const router = useRouter();
 
   const [step, setStep] = useState(0);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [textResponses, setTextResponses] = useState(new Array<string>());
   const [optionResponses, setOptionResponses] = useState(new Array<Number>());
-
-  // if (!params.surveyId) {
-  //   return <p>Survey ID not found</p>;
-  // }
 
   const form = questions?.map((question, index) => {
     if (question.type === "TEXT") {
@@ -78,7 +67,6 @@ const SurveyPage = () => {
           next={() => {
             setStep(1);
             getSurvey(params.surveyId);
-            getQuestionFromSlug(params.surveyId);
           }}
         />
       );

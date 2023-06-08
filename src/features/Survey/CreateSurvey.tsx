@@ -56,10 +56,10 @@ export const CreateSurvey: React.FC<CreateSurveyProps> = ({}) => {
       desc: values.desc,
       status: "DRAFT",
     };
-    // setSurvey(newSurvey);
-    createSurvey(newSurvey);
-    successAlert("Draft survey created! You can now add questions to it");
-    router.push(`/survey/${newSurvey.slug}?new=true`);
+    createSurvey(newSurvey, () => {
+      successAlert("Draft survey created! You can now add questions to it");
+      router.push(`/survey/${newSurvey.slug}`);
+    });
   };
 
   return (
@@ -84,7 +84,7 @@ export const CreateSurvey: React.FC<CreateSurveyProps> = ({}) => {
                   <div className="flex flex-col gap-3 mt-2 mb-4">
                     <FormLabel>Survey Name</FormLabel>
                     <FormControl>
-                      <Input height="20" {...field} />
+                      <Input disabled={loading} {...field} />
                     </FormControl>
                     <FormMessage />
                   </div>
@@ -99,7 +99,7 @@ export const CreateSurvey: React.FC<CreateSurveyProps> = ({}) => {
                   <div className="flex flex-col gap-3 mt-2 mb-4">
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input disabled={loading} {...field} />
                     </FormControl>
                     <FormMessage />
                   </div>
@@ -107,7 +107,9 @@ export const CreateSurvey: React.FC<CreateSurveyProps> = ({}) => {
               )}
             />
             <div className="flex justify-end">
-              <Button type="submit">Save</Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? "Loading..." : "Create"}
+              </Button>
             </div>
           </form>
         </Form>

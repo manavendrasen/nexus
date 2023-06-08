@@ -73,21 +73,21 @@ export const AddQuestion: React.FC<AddQuestionProps> = ({}) => {
   ) => {
     // TODO: add question mark
     addQuestion({
-      index: questions.length + 4,
+      index: questions.length + 1,
       type: "OPTION",
       text: values.text,
       options: [values.option1, values.option2, values.option3, values.option4],
     });
 
     createQuestion({
-      index: questions.length + 4,
+      index: questions.length + 1,
       type: "OPTION",
       text: values.text,
       options: [values.option1, values.option2, values.option3, values.option4],
     });
 
     console.log({
-      index: questions.length + 4,
+      index: questions.length + 1,
       type: "OPTION",
       text: values.text,
       options: [values.option1, values.option2, values.option3, values.option4],

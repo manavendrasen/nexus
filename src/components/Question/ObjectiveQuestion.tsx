@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../Button/Button";
 import { Edit } from "lucide-react";
 import Question from "@/constants/Question";
+import useSurvey from "@/store/SurveyStore";
 
 interface QuestionProps {
   question: Question;
@@ -27,6 +28,7 @@ export const ObjectiveQuestion: React.FC<QuestionProps> = ({
   index,
   allowEdit,
 }) => {
+  const { updateQuestion, loading, getSurvey } = useSurvey();
   const [isEditMode, setIsEditMode] = useState(false);
   const [showEditButton, setShowEditButton] = useState(false);
   const formSchema = z.object({
@@ -49,8 +51,25 @@ export const ObjectiveQuestion: React.FC<QuestionProps> = ({
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    setIsEditMode(false);
+    updateQuestion(
+      {
+        text: values.text,
+        type: "OPTION",
+        index: question.index,
+        options: [
+          values.option1,
+          values.option2,
+          values.option3,
+          values.option4,
+        ],
+        surveySlug: question.surveySlug,
+      },
+      () => {
+        setIsEditMode(false);
+        setShowEditButton(false);
+        getSurvey(question.surveySlug!);
+      }
+    );
   };
 
   return (
@@ -90,7 +109,7 @@ export const ObjectiveQuestion: React.FC<QuestionProps> = ({
                   </FormItem>
                 )}
               />
-              <div className="grid grid-cols-2 gap-4 my-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 my-4">
                 <FormField
                   control={form.control}
                   name="option1"
@@ -146,14 +165,14 @@ export const ObjectiveQuestion: React.FC<QuestionProps> = ({
               </div>
               <div className="flex justify-between items-center">
                 <Button
-                  variant="destructive"
+                  variant="secondary"
                   onClick={() => {
                     form.reset();
                     setIsEditMode(false);
                     setShowEditButton(false);
                   }}
                 >
-                  Delete
+                  Cancel
                 </Button>
                 <Button type="submit">Save</Button>
               </div>

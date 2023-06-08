@@ -48,7 +48,7 @@ function Home() {
                     alt=""
                     width="50px"
                   /> */}
-                  <p className="ml-3 text-base font-bold">Nexus</p>
+                  <p className="ml-3 text-lg font-bold">Nexus</p>
                 </div>
               </Link>
             </div>
@@ -110,7 +110,7 @@ function Home() {
               {/* Section header */}
               <div className="text-center pb-12 md:pb-16 mt-16">
                 <h1
-                  className="text-5xl md:text-6xl font-extrabold tracking-tighter mb-8"
+                  className="text-5xl md:text-6xl font-semibold tracking-tight mb-8"
                   data-aos="zoom-y-out"
                 >
                   Build your network

@@ -12,17 +12,6 @@ import Question from "@/constants/Question";
 import { PersonalQuestions } from "@/constants/PersonalQuestions";
 import Response from "@/constants/Response";
 
-/**
- * When the user visits the survey link, they will be presented with a form.
- * 1. The user will be asked to enter their email.
- * 2. Create Anonymous User
- * 3. Create Survey Response
- * 4. Save Survey Response
- *
- * Create Survey
- *
- */
-
 interface SurveyStore {
   loading: boolean;
   userEmail: string;
@@ -31,16 +20,17 @@ interface SurveyStore {
   survey?: Survey;
   setSurvey: (survey: Survey) => void;
   getSurvey: (slug: string) => void;
-  getQuestionFromSlug: (slug: string) => void;
   submitSurvey: (response: Response) => void;
 
   // dashboard
   getSurveys: () => void;
   allMySurveys: Survey[];
-  createSurvey: (survey: Survey) => void;
+  updateQuestion: (question: Question, callback?: () => void) => void;
+  deleteQuestion: (question: Question, callback?: () => void) => void;
+  createSurvey: (survey: Survey, callback?: () => void) => void;
   addQuestion: (question: Question) => void;
   createQuestion: (question: Question) => void;
-  updateSurveyStatus: (status: string) => void;
+  updateSurveyStatus: (status: string, callback: () => void) => void;
 }
 
 const useSurvey = create<SurveyStore>()((set, get) => ({
@@ -113,7 +103,25 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
         throw new Error("Survey not found");
       }
 
+      const questionResponse = await useAppwrite
+        .getState()
+        .databaseService?.listDocuments(DATABASE_ID, COLLECTION_ID_QUESTION, [
+          Query.equal("surveySlug", slug),
+        ]);
+      console.log("questionResponse", questionResponse);
+
+      const fetchedQuestions = questionResponse?.documents.map(question => ({
+        index: question.index,
+        type: question.type,
+        text: question.text,
+        options: question?.options,
+        surveySlug: question.surveySlug,
+      }));
+
       const fetchedSurvey = response.documents[0];
+
+      // sort questions by index
+      fetchedQuestions?.sort((a, b) => a.index - b.index);
 
       set({
         survey: {
@@ -125,6 +133,7 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
           status: fetchedSurvey.status,
           responseCount: fetchedSurvey.responseCount,
         },
+        questions: fetchedQuestions,
       });
     } catch (error) {
       console.log(error);
@@ -156,7 +165,7 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
       set({ loading: false });
     }
   },
-  createSurvey: async (survey: Survey) => {
+  createSurvey: async (survey: Survey, callback) => {
     set({ loading: true });
     try {
       const response = await useAppwrite
@@ -170,7 +179,7 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
             title: survey.title,
             desc: survey.desc,
             responseCount: 0,
-            status: "ACTIVE",
+            status: survey.status,
             createdBy: useAppwrite.getState().me?.$id,
           }
         );
@@ -186,7 +195,7 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
               index: Number(question.index),
               type: question.type,
               text: question.text,
-              surveySlug: get().survey?.slug,
+              surveySlug: survey.slug,
             }
           );
       });
@@ -197,13 +206,14 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
 
       console.log("response", response);
       console.log("personalQuestionResponse", personalQuestionResponse);
+      callback && callback();
     } catch (error) {
       console.log(error);
     } finally {
       set({ loading: false });
     }
   },
-  updateSurveyStatus: async (status: string) => {
+  updateSurveyStatus: async (status: string, callback) => {
     set({ loading: true });
     try {
       const response = await useAppwrite
@@ -217,40 +227,14 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
           }
         );
       console.log("response", response);
+      callback();
     } catch (error) {
       console.log(error);
     } finally {
       set({ loading: false });
     }
   },
-  getQuestionFromSlug: async (slug: string) => {
-    set({ loading: true });
-    try {
-      const response = await useAppwrite
-        .getState()
-        .databaseService?.listDocuments(DATABASE_ID, COLLECTION_ID_QUESTION, [
-          Query.equal("surveySlug", slug),
-        ]);
-      console.log("response", response);
 
-      const fetchedQuestions = response?.documents.map(question => ({
-        index: question.index,
-        type: question.type,
-        text: question.text,
-        options: question?.options,
-        surveySlug: question.surveySlug,
-      }));
-
-      // sort questions by index
-      fetchedQuestions?.sort((a, b) => a.index - b.index);
-
-      set({ questions: fetchedQuestions });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      set({ loading: false });
-    }
-  },
   submitSurvey: async res => {
     set({ loading: true });
     try {
@@ -281,6 +265,70 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
 
       console.log("response", response);
       console.log("surveyResponse", surveyResponse);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      set({ loading: false });
+    }
+  },
+  updateQuestion: async (question: Question, callback) => {
+    set({ loading: true });
+    try {
+      const questionResponse = await useAppwrite
+        .getState()
+        .databaseService?.listDocuments(DATABASE_ID, COLLECTION_ID_QUESTION, [
+          Query.equal("surveySlug", question.surveySlug!),
+          Query.equal("index", question.index!),
+        ]);
+
+      if (!questionResponse) throw new Error("Question not found");
+
+      const questionId = questionResponse?.documents[0].$id;
+
+      const response = await useAppwrite
+        .getState()
+        .databaseService?.updateDocument(
+          DATABASE_ID,
+          COLLECTION_ID_QUESTION,
+          questionId,
+          {
+            index: Number(question.index),
+            type: question.type,
+            text: question.text,
+            options: question?.options || [],
+          }
+        );
+      console.log("response", response);
+      callback && callback();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      set({ loading: false });
+    }
+  },
+  deleteQuestion: async (question: Question, callback) => {
+    set({ loading: true });
+    try {
+      const questionResponse = await useAppwrite
+        .getState()
+        .databaseService?.listDocuments(DATABASE_ID, COLLECTION_ID_QUESTION, [
+          Query.equal("surveySlug", question.surveySlug!),
+          Query.equal("index", question.index!),
+        ]);
+
+      if (!questionResponse) throw new Error("Question not found");
+
+      const questionId = questionResponse?.documents[0].$id;
+
+      const response = await useAppwrite
+        .getState()
+        .databaseService?.deleteDocument(
+          DATABASE_ID,
+          COLLECTION_ID_QUESTION,
+          questionId
+        );
+      console.log("response", response);
+      callback && callback();
     } catch (error) {
       console.log(error);
     } finally {
