@@ -62,7 +62,7 @@ export const TextQuestion: React.FC<QuestionProps> = ({
 
   return (
     <div
-      className="px-6 py-4 rounded-sm bg-white border-2 border-slate-200 relative"
+      className="px-6 py-4 bg-card relative"
       onMouseEnter={() => {
         if (!isEditMode) {
           setShowEditButton(true);
@@ -100,7 +100,7 @@ export const TextQuestion: React.FC<QuestionProps> = ({
 
               <div className="flex justify-between items-center mt-4">
                 <Button
-                  variant="secondary"
+                  variant="outline"
                   onClick={() => {
                     form.reset();
                     // deleteQuestion(question, () => {

@@ -79,7 +79,7 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
   }
 
   return (
-    <div className="bg-slate-50 min-h-screen relative">
+    <div className="min-h-screen relative">
       <Navbar href="/dashboard" />
 
       <div className="container lg:py-4 lg:px-40 px-8 py-4 mt-4">
@@ -95,7 +95,7 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
               <p className="text-sm text-gray-700">{survey?.desc}</p>
               {survey?.status === "ACTIVE" && (
                 <div
-                  className="cursor-pointer hover:border-slate-500 hover:font-semibold my-4 px-6 py-4 font-medium text-slate-600 text-sm bg-white rounded-md border-2 border-slate-200 w-min whitespace-nowrap flex items-center gap-2"
+                  className="cursor-pointer hover:border-accent hover:font-semibold my-4 px-6 py-4 font-medium text-muted-foreground text-sm bg-background rounded-md border-2 border-border w-min whitespace-nowrap flex items-center gap-2"
                   onClick={() => {
                     navigator.clipboard.writeText(url);
                     successAlert("Copied to clipboard");

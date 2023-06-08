@@ -37,15 +37,9 @@ export const LoginForm = () => {
     },
   });
 
-  // useEffect(() => {
-  //   if (me) {
-  //     router.push("/dashboard");
-  //   }
-  // }, [me, router]);
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
     try {
-      await login(values, () => {
+      login(values, () => {
         router.push("/dashboard");
       });
     } catch (error) {

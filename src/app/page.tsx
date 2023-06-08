@@ -74,7 +74,7 @@ function Home() {
       <main className="flex-grow">
         <section className="relative">
           {/* Illustration behind hero content */}
-          <div
+          {/* <div
             className="absolute left-1/2 transform -translate-x-1/2 bottom-0 pointer-events-none"
             aria-hidden="true"
           >
@@ -102,7 +102,7 @@ function Home() {
                 <circle cx="155" cy="443" r="64" />
               </g>
             </svg>
-          </div>
+          </div> */}
 
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             {/* Hero content */}
@@ -117,12 +117,12 @@ function Home() {
                 </h1>
                 <div className="max-w-3xl mx-auto">
                   <p
-                    className="text-base text-slate-600 mb-8"
+                    className="text-base text-muted-foreground mb-8"
                     data-aos="zoom-y-out"
                     data-aos-delay="150"
                   >
-                    With Nexus, you can connect with people who share your
-                    interests and build your network.
+                    With Nexus, you can connect with people <br /> who share
+                    your interests and build your network.
                   </p>
 
                   <div
@@ -144,10 +144,10 @@ function Home() {
           <div className="md:flex md:items-center md:justify-between py-4 md:py-8 border-t border-slate-200">
             {/* Social links */}
             <ul className="flex mb-4 md:order-1 md:ml-4 md:mb-0">
-              <li>
+              {/* <li>
                 <Link
                   href="#"
-                  className="flex justify-center items-center text-slate-600 hover:text-slate-900 bg-white hover:bg-white-100 rounded-full shadow transition duration-150 ease-in-out"
+                  className="flex justify-center items-center text-muted-foreground hover:text-slate-900 bg-white hover:bg-white-100 rounded-full shadow transition duration-150 ease-in-out"
                   aria-label="Twitter"
                 >
                   <svg
@@ -162,7 +162,7 @@ function Home() {
               <li className="ml-4">
                 <Link
                   href="#"
-                  className="flex justify-center items-center text-slate-600 hover:text-slate-900 bg-white hover:bg-white-100 rounded-full shadow transition duration-150 ease-in-out"
+                  className="flex justify-center items-center text-muted-foreground hover:text-slate-900 bg-white hover:bg-white-100 rounded-full shadow transition duration-150 ease-in-out"
                   aria-label="Github"
                 >
                   <svg
@@ -177,7 +177,7 @@ function Home() {
               <li className="ml-4">
                 <Link
                   href="#"
-                  className="flex justify-center items-center text-slate-600 hover:text-slate-900 bg-white hover:bg-white-100 rounded-full shadow transition duration-150 ease-in-out"
+                  className="flex justify-center items-center text-muted-foreground hover:text-slate-900 bg-white hover:bg-white-100 rounded-full shadow transition duration-150 ease-in-out"
                   aria-label="Facebook"
                 >
                   <svg
@@ -188,14 +188,14 @@ function Home() {
                     <path d="M14.023 24L14 17h-3v-3h3v-2c0-2.7 1.672-4 4.08-4 1.153 0 2.144.086 2.433.124v2.821h-1.67c-1.31 0-1.563.623-1.563 1.536V14H21l-1 3h-2.72v7h-3.257z" />
                   </svg>
                 </Link>
-              </li>
+              </li> */}
             </ul>
 
             {/* Copyrights note */}
-            <div className="text-sm text-slate-600 mr-4">
+            <div className="text-sm text-muted-foreground mr-4">
               Made by{" "}
               <a
-                className="text-blue-600 hover:underline"
+                className="text-primary hover:underline"
                 href="https://manavendrasen.com"
               >
                 @manavendrasen

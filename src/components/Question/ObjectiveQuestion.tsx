@@ -74,7 +74,7 @@ export const ObjectiveQuestion: React.FC<QuestionProps> = ({
 
   return (
     <div
-      className="px-6 py-4 rounded-sm bg-white border-2 border-slate-200 relative"
+      className="px-6 py-4 rounded bg-card relative"
       onMouseEnter={() => {
         if (!isEditMode) {
           setShowEditButton(true);
@@ -165,7 +165,7 @@ export const ObjectiveQuestion: React.FC<QuestionProps> = ({
               </div>
               <div className="flex justify-between items-center">
                 <Button
-                  variant="secondary"
+                  variant="outline"
                   onClick={() => {
                     form.reset();
                     setIsEditMode(false);

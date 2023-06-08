@@ -6,8 +6,8 @@ interface AppwriteStore {
   accountService?: Account;
   databaseService?: Databases;
   init: () => void;
-  signUp: (data: SignUpFormState) => Promise<void>;
-  login: (data: LoginFormState, callback: () => void) => Promise<void>;
+  signUp: (data: SignUpFormState, callback?: () => void) => void;
+  login: (data: LoginFormState, callback?: () => void) => void;
   sendVerificationEmail: () => void;
   confirmVerificationEmail: (userId: string, secret: string) => void;
   // fetchMe: () => Promise<void>;
@@ -55,7 +55,7 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
     });
     console.log("Appwrite initialized");
   },
-  signUp: async (data: SignUpFormState) => {
+  signUp: async (data: SignUpFormState, callback) => {
     set({ authLoading: true });
 
     const accountService = get().accountService;
@@ -72,6 +72,7 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
         data.password,
         data.name
       );
+      callback && callback();
     } catch (error) {
       console.error(error);
       throw new Error("Could not Sign Up");
@@ -90,7 +91,7 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
       await accountService.createEmailSession(data.email, data.password);
       const me = await accountService.get();
       set({ me });
-      callback();
+      callback && callback();
     } catch (error) {
       console.error(error);
       throw new Error("Could not login");

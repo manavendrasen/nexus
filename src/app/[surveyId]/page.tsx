@@ -77,7 +77,7 @@ const SurveyPage = () => {
 
   return (
     <>
-      <div className="min-h-screen flex flex-col gap-3 justify-center items-center overflow-x-hidden py-12 relative bg-slate-50 px-8">
+      <div className="min-h-screen flex flex-col gap-3 justify-center items-center overflow-x-hidden py-12 relative bg-background px-8">
         {loading ? <p>Loading ..</p> : <>{ui}</>}
         {!loading && step > 0 && form[step - 1]}
         {!loading && step > questions.length && (
