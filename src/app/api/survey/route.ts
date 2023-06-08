@@ -2,7 +2,7 @@ import Redis from "ioredis";
 import { getRedisUrl } from "@/lib/Redis";
 import { NextRequest, NextResponse } from "next/server";
 
-export const redis = new Redis(getRedisUrl());
+const redis = new Redis(getRedisUrl());
 
 /**
  * SEND RESPONSE TO REDIS and return 200

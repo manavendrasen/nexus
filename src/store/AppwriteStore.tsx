@@ -1,5 +1,7 @@
 import { create } from "zustand";
-import { Client, Account, ID, Databases, Models } from "appwrite";
+import { Client, Account, ID, Databases, Models, Functions } from "appwrite";
+import axios from "axios";
+import { FUNCTION_ID } from "@/constants/DatabaseIds";
 
 interface AppwriteStore {
   clientService?: Client;
@@ -17,6 +19,9 @@ interface AppwriteStore {
   // survey
   createMagicURLSession: (email: string) => void;
   updateMagicURLSession: (userId: string, secret: string) => void;
+
+  // function
+  visualize: (surveyId: string) => Promise<any>;
 }
 
 type SignUpFormState = {
@@ -183,6 +188,27 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
     } finally {
       set({ authLoading: false });
     }
+  },
+  visualize: async surveyId => {
+    // get data from backend
+    const response = await axios.get(`/api/survey?surveySlug=${surveyId}`);
+    const surveyResponses = response.data;
+
+    // format the data
+
+    console.log("surveyResponses", surveyResponses);
+
+    // call the function with the data
+    const functions = new Functions(get().clientService!);
+    const result = await functions.createExecution(
+      FUNCTION_ID,
+      JSON.stringify({
+        responses: surveyResponses,
+      })
+    );
+
+    //  const parsedResponse = response.rep.map(res => JSON.parse(res));
+    console.log("result", JSON.parse(result.response));
   },
 }));
 

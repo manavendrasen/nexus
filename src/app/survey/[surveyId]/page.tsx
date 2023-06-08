@@ -19,11 +19,13 @@ import useSurvey from "@/store/SurveyStore";
 import { Skeleton } from "@/components/Skeleton/Skeleton";
 import axios from "axios";
 import Link from "next/link";
+import useAppwrite from "@/store/AppwriteStore";
 
 interface SurveyPageProps {}
 
 const SurveyPage: React.FC<SurveyPageProps> = () => {
   const { surveyId } = useParams();
+  const { visualize } = useAppwrite();
   const { survey, getSurvey, questions, loading, updateSurveyStatus } =
     useSurvey();
   const { successAlert } = useAlert();
@@ -45,13 +47,13 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
       action = (
         <Button
           onClick={async () => {
-            updateSurveyStatus("COMPLETE", async () => {
-              getSurvey(surveyId);
-              const response = await axios.get(
-                `/api/survey?surveySlug=${surveyId}`
-              );
-              alert(JSON.stringify(response.data));
-            });
+            const result = await visualize("470567");
+            console.log(result);
+
+            // updateSurveyStatus("COMPLETE", async () => {
+            //   getSurvey(surveyId);
+
+            // });
           }}
         >
           <Check size={16} className="mr-2" /> Complete
