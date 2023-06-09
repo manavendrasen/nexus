@@ -1,22 +1,20 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import React from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
+import useSurvey from "@/store/SurveyStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Form,
+  FormMessage,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/components/Form/Form";
 import { Button } from "@/components/Button/Button";
 import { Input } from "@/components/Input/Input";
-import useSurvey from "@/store/SurveyStore";
 import { ArrowRight } from "lucide-react";
 
 interface GetUserEmailProps {

@@ -1,12 +1,10 @@
 import { Metadata } from "next";
-import Link from "next/link";
 
-import { SignUpForm } from "@/features/Auth/SignUpForm";
 import { ConfirmVerificationEmailForm } from "@/features/Auth/ConfirmEmailVerificationForm";
 
 export const metadata: Metadata = {
-  title: "Authentication",
-  description: "Authentication forms built using the components.",
+  title: "Confirm Email | Nexus - Build your Network",
+  description: "Nexus is a survey platform built on top of Appwrite.",
 };
 
 export default function ConfirmVerificationEmailPage() {

@@ -1,1 +1,1 @@
- docker run --rm --interactive --tty --volume ${PWD}:/usr/code openruntimes/python:v2-3.10 sh /usr/local/src/build.sh
+docker run --rm --interactive --tty --volume ${PWD}:/usr/code openruntimes/python:v2-3.10 sh /usr/local/src/build.sh

@@ -1,22 +1,13 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import * as z from "zod";
+import React from "react";
 import { useForm } from "react-hook-form";
+
+import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/Form/Form";
+// ui
 import { Button } from "@/components/Button/Button";
-import { Input } from "@/components/Input/Input";
-import useSurvey from "@/store/SurveyStore";
 import { ArrowRight } from "lucide-react";
 
 interface OptionResponseProps {

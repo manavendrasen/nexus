@@ -1,10 +1,22 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { Navbar } from "@/components/Navbar/Navbar";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { Check, Copy, Plus, Save } from "lucide-react";
+import Head from "next/head";
+import { useParams } from "next/navigation";
+
+// features
+import { AddQuestion } from "@/features/Question/AddQuestion";
+
+// hooks
 import { useAlert } from "@/components/AlertProvider/AlertProvider";
+import useSurvey from "@/store/SurveyStore";
+import useAppwrite from "@/store/AppwriteStore";
+
+// icons
+import { Check, Copy, Save } from "lucide-react";
+
+// ui
+import { Navbar } from "@/components/Navbar/Navbar";
 import { ObjectiveQuestion } from "@/components/Question/ObjectiveQuestion";
 import { TextQuestion } from "@/components/Question/TextQuestion";
 import { Button } from "@/components/Button/Button";
@@ -14,15 +26,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/Tabs/Tabs";
-import { AddQuestion } from "@/features/Question/AddQuestion";
-import useSurvey from "@/store/SurveyStore";
 import { Skeleton } from "@/components/Skeleton/Skeleton";
-import useAppwrite from "@/store/AppwriteStore";
-
-export const metadata = {
-  title: "Nexux Dashboard",
-  description: "Nexux is a survey platform built on top of Appwrite.",
-};
 
 interface SurveyPageProps {}
 
@@ -86,106 +90,115 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
   }
 
   return (
-    <div className="min-h-screen relative">
-      <Navbar href="/dashboard" />
+    <>
+      <Head>
+        <title>Nexus | Dashboard - {survey?.title}</title>
+        <meta
+          name="description"
+          content="Nexus is a survey platform built on top of Appwrite."
+        />
+      </Head>
+      <div className="min-h-screen relative">
+        <Navbar href="/dashboard" />
 
-      <div className="container lg:py-4 lg:px-40 px-8 py-4 mt-4">
-        {loading ? (
-          <div className="space-y-4">
-            <Skeleton className="h-6 w-[250px]" />
-            <Skeleton className="h-6 w-[200px]" />
-          </div>
-        ) : (
-          <section className="flex md:justify-between items-start justify-start flex-wrap gap-6">
-            <div>
-              <h1 className="text-3xl font-semibold mb-2">{survey?.title}</h1>
-              <p className="text-sm text-muted-foreground">{survey?.desc}</p>
-              {survey?.status === "ACTIVE" && (
-                <div
-                  className="cursor-pointer hover:border-accent hover:text-accent max-w-full my-4 px-6 py-4 font-medium text-muted-foreground text-sm bg-background rounded-md border-2 border-border w-min whitespace-nowrap flex items-center gap-2"
-                  onClick={() => {
-                    navigator.clipboard.writeText(url);
-                    successAlert("Copied to clipboard");
-                  }}
-                >
-                  <Copy size={16} /> {url}
-                </div>
-              )}
+        <div className="container lg:py-4 lg:px-40 px-8 py-4 mt-4">
+          {loading ? (
+            <div className="space-y-4">
+              <Skeleton className="h-6 w-[250px]" />
+              <Skeleton className="h-6 w-[200px]" />
             </div>
-            <div>{action}</div>
-          </section>
-        )}
+          ) : (
+            <section className="flex md:justify-between items-start justify-start flex-wrap gap-6">
+              <div>
+                <h1 className="text-3xl font-semibold mb-2">{survey?.title}</h1>
+                <p className="text-sm text-muted-foreground">{survey?.desc}</p>
+                {survey?.status === "ACTIVE" && (
+                  <div
+                    className="cursor-pointer hover:border-accent hover:text-accent max-w-full my-4 px-6 py-4 font-medium text-muted-foreground text-sm bg-background rounded-md border-2 border-border w-min whitespace-nowrap flex items-center gap-2"
+                    onClick={() => {
+                      navigator.clipboard.writeText(url);
+                      successAlert("Copied to clipboard");
+                    }}
+                  >
+                    <Copy size={16} /> {url}
+                  </div>
+                )}
+              </div>
+              <div>{action}</div>
+            </section>
+          )}
 
-        <section className="my-8">
-          <Tabs
-            defaultValue={
-              survey?.status === "COMPLETE" ? "responses" : "questions"
-            }
-          >
-            {survey?.status === "COMPLETE" && (
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger disabled={loading} value="questions">
-                  Questions
-                </TabsTrigger>
-                <TabsTrigger disabled={loading} value="responses">
-                  Responses
-                </TabsTrigger>
-              </TabsList>
-            )}
-            {loading ? (
-              <>
-                <div className="space-y-4 my-8">
-                  <Skeleton className="h-6 w-full" />
-                  <Skeleton className="h-6 w-2/3" />
-                </div>
-                <div className="space-y-4 my-8">
-                  <Skeleton className="h-6 w-full" />
-                  <Skeleton className="h-6 w-2/3" />
-                </div>
-                <div className="space-y-4 my-8">
-                  <Skeleton className="h-6 w-full" />
-                  <Skeleton className="h-6 w-2/3" />
-                </div>
-              </>
-            ) : (
-              <TabsContent value="questions">
-                {questions && (
-                  <div className="grid grid-cols-1 gap-4 mt-4">
-                    {questions.map((question, index) => {
-                      if (question.type === "TEXT") {
-                        return (
-                          <TextQuestion
-                            key={`${question.text}-${index}`}
-                            index={index}
-                            question={question}
-                            allowEdit={survey?.status === "DRAFT"}
-                          />
-                        );
-                      } else if (question.type === "OPTION") {
-                        return (
-                          <ObjectiveQuestion
-                            key={`${question.text}-${index}`}
-                            question={question}
-                            index={index}
-                            allowEdit={survey?.status === "DRAFT"}
-                          />
-                        );
-                      }
-                    })}
+          <section className="my-8">
+            <Tabs
+              defaultValue={
+                survey?.status === "COMPLETE" ? "responses" : "questions"
+              }
+            >
+              {survey?.status === "COMPLETE" && (
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger disabled={loading} value="questions">
+                    Questions
+                  </TabsTrigger>
+                  <TabsTrigger disabled={loading} value="responses">
+                    Responses
+                  </TabsTrigger>
+                </TabsList>
+              )}
+              {loading ? (
+                <>
+                  <div className="space-y-4 my-8">
+                    <Skeleton className="h-6 w-full" />
+                    <Skeleton className="h-6 w-2/3" />
                   </div>
-                )}
-                {survey?.status === "DRAFT" && (
-                  <div className="flex justify-end mt-6">
-                    <AddQuestion />
+                  <div className="space-y-4 my-8">
+                    <Skeleton className="h-6 w-full" />
+                    <Skeleton className="h-6 w-2/3" />
                   </div>
-                )}
-              </TabsContent>
-            )}
-            <TabsContent value="responses"></TabsContent>
-          </Tabs>
-        </section>
+                  <div className="space-y-4 my-8">
+                    <Skeleton className="h-6 w-full" />
+                    <Skeleton className="h-6 w-2/3" />
+                  </div>
+                </>
+              ) : (
+                <TabsContent value="questions">
+                  {questions && (
+                    <div className="grid grid-cols-1 gap-4 mt-4">
+                      {questions.map((question, index) => {
+                        if (question.type === "TEXT") {
+                          return (
+                            <TextQuestion
+                              key={`${question.text}-${index}`}
+                              index={index}
+                              question={question}
+                              allowEdit={survey?.status === "DRAFT"}
+                            />
+                          );
+                        } else if (question.type === "OPTION") {
+                          return (
+                            <ObjectiveQuestion
+                              key={`${question.text}-${index}`}
+                              question={question}
+                              index={index}
+                              allowEdit={survey?.status === "DRAFT"}
+                            />
+                          );
+                        }
+                      })}
+                    </div>
+                  )}
+                  {survey?.status === "DRAFT" && (
+                    <div className="flex justify-end mt-6">
+                      <AddQuestion />
+                    </div>
+                  )}
+                </TabsContent>
+              )}
+              <TabsContent value="responses"></TabsContent>
+            </Tabs>
+          </section>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,7 +1,5 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -71,11 +69,9 @@ export const TextResponse: React.FC<TextResponseProps> = ({
               )}
             />
 
-            {/* <div className="grid"> */}
             <Button type="submit">
               Next <ArrowRight size={16} className="ml-2" />
             </Button>
-            {/* </div> */}
           </form>
         </Form>
       </div>

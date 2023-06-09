@@ -15,7 +15,6 @@ export const Survey: React.FC<SurveyProps> = ({
   slug,
   status,
 }) => {
-  
   let statusMessage;
   switch (status) {
     case "DRAFT":

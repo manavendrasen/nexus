@@ -1,7 +1,9 @@
 import { create } from "zustand";
-import { Client, Account, ID, Databases, Models, Query } from "appwrite";
-import Survey from "@/constants/Survey";
+import { ID, Query } from "appwrite";
 import useAppwrite from "./AppwriteStore";
+
+// types and constants
+import Survey from "@/constants/Survey";
 import {
   COLLECTION_ID_QUESTION,
   COLLECTION_ID_RESPONSE,
@@ -16,8 +18,9 @@ interface SurveyStore {
   loading: boolean;
   userEmail: string;
   questions: Question[];
-  setUserEmail: (email: string) => void;
   survey?: Survey;
+
+  setUserEmail: (email: string) => void;
   setSurvey: (survey: Survey) => void;
   getSurvey: (slug: string) => void;
   submitSurvey: (response: Response) => void;

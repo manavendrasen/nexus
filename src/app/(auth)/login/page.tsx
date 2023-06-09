@@ -4,8 +4,8 @@ import Link from "next/link";
 import { LoginForm } from "@/features/Auth/LoginForm";
 
 export const metadata: Metadata = {
-  title: "Authentication",
-  description: "Authentication forms built using the components.",
+  title: "Login | Nexus - Build your Network",
+  description: "Nexus is a survey platform built on top of Appwrite.",
 };
 
 export default function SignUpPage() {

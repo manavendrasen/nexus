@@ -44,13 +44,14 @@ export const SignUpForm = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await signUp(values);
-      login(values, () => {
-        sendVerificationEmail();
-        setIsSignUpComplete(true);
+      signUp(values, () => {
+        login(values, () => {
+          sendVerificationEmail();
+          setIsSignUpComplete(true);
+        });
       });
-      
     } catch (error) {
+      console.log(error);
       errorAlert("Uh oh! Something went wrong.");
     }
   };
@@ -61,10 +62,8 @@ export const SignUpForm = () => {
         <>
           <div className="grid gap-6 x">
             <Alert>
-              <FiCheckCircle color="green" />
-
               <AlertTitle>
-                <span className="text-green-600 font-medium">Success</span>
+                <span className="text-accent font-medium">Success</span>
               </AlertTitle>
               <AlertDescription>
                 Please check your email to verify your account.

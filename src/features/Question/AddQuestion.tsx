@@ -1,10 +1,19 @@
 "use client";
 
+import React from "react";
+
+// hooks
 import { useAlert } from "@/components/AlertProvider/AlertProvider";
+import useSurvey from "@/store/SurveyStore";
+import { useForm } from "react-hook-form";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+// ui
 import { Button } from "@/components/Button/Button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -14,24 +23,14 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormMessage,
 } from "@/components/Form/Form";
-import { Input } from "@/components/Input/Input";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/Tabs/Tabs";
-import useSurvey from "@/store/SurveyStore";
-import { zodResolver } from "@hookform/resolvers/zod";
+
+// icons
 import { Plus } from "lucide-react";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { Input } from "@/components/Input/Input";
 
 interface AddQuestionProps {}
 

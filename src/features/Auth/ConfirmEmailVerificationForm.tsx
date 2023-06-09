@@ -3,12 +3,14 @@
 import React, { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/Button/Button";
 
+// hooks
 import useAppwrite from "@/store/AppwriteStore";
 import { useAlert } from "@/components/AlertProvider/AlertProvider";
+
+// ui
+import { Button } from "@/components/Button/Button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/Alert/Alert";
-import { FiCheckCircle } from "react-icons/fi";
 
 export const ConfirmVerificationEmailForm = () => {
   const [isVerificationComplete, setIsVerificationComplete] = useState(false);
@@ -41,10 +43,8 @@ export const ConfirmVerificationEmailForm = () => {
       <div className="grid gap-6">
         {isVerificationComplete ? (
           <Alert>
-            <FiCheckCircle color="green" />
-
             <AlertTitle>
-              <span className="text-green-600 font-medium">Success</span>
+              <span className="text-accent font-medium">Success</span>
             </AlertTitle>
             <AlertDescription>
               Your email has been verified successfully! You will be redirected
