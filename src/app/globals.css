@@ -6,74 +6,73 @@
 
 @layer base {
   :root {
-    --background: #fffbf5;
-    --foreground: #020617;
+    --background: #eff1f5;
+    --foreground: #4c4f69;
 
-    --muted: #f7f7f6;
-    --muted-foreground: #4b5563;
+    --muted: #e6e9ef;
+    --muted-foreground: #5c5f77;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
+    --popover: #9ca0b0;
+    --popover-foreground: #4c4f69;
 
-    --card: #ffffff;
-    --card-foreground: 222.2 47.4% 11.2%;
+    --card: #e6e9ef;
+    --card-foreground: #4c4f69;
 
-    --border: 214.3 31.8% 91.4%;
+    --border: #ccd0da;
     --input: #fbfabf;
 
-    /* --primary: 222.2 47.4% 11.2%; */
-    --primary: #190041;
-    --primary-foreground: #eef2ff;
+    --primary: #8839ef;
+    --primary-foreground: #eff1f5;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: #7287fd;
+    --secondary-foreground: #eff1f5;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: #40a02b;
+    --accent-foreground: #eff1f5;
 
-    --destructive: 0 100% 50%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: #d20f39;
+    --destructive-foreground: #eff1f5;
 
-    --ring: 215 20.2% 65.1%;
+    --ring: #ea76cb;
 
     --radius: 0.25rem;
   }
 
-  /* @media (prefers-color-scheme: dark) {
+
+  @media (prefers-color-scheme: dark) {
     :root {
-      --background: 224 71% 4%;
-      --muted: 222, 47%, 11%;
-      --foreground: 213 31% 91%;
+      --background: #1e1e2e;
+      --foreground: #cdd6f4;
 
-      --muted: 223 47% 11%;
-      --muted-foreground: 215.4 16.3% 56.9%;
+      --muted: #11111b;
+      --muted-foreground: #a6adc8;
 
-      --popover: 224 71% 4%;
-      --popover-foreground: 215 20.2% 65.1%;
+      --popover: #6c7086;
+      --popover-foreground: #cdd6f4;
 
-      --card: 224 71% 4%;
-      --card-foreground: 213 31% 91%;
+      --card: #313244;
+      --card-foreground: #cdd6f4;
 
-      --border: 216 34% 17%;
-      --input: 216 34% 17%;
+      --border: #7f849c	;
+      --input: #313244;
 
-      --primary: 210 40% 98%;
-      --primary-foreground: 222.2 47.4% 1.2%;
+      --primary: #f5c2e7;
+      --primary-foreground: #1e1e2e;
 
-      --secondary: 222.2 47.4% 11.2%;
-      --secondary-foreground: 210 40% 98%;
+      --secondary: #b4befe;
+      --secondary-foreground: #1e1e2e;
 
-      --accent: 216 34% 17%;
-      --accent-foreground: 210 40% 98%;
+      --accent: #a6e3a1;
+      --accent-foreground: #1e1e2e;
 
-      --destructive: 0 63% 31%;
-      --destructive-foreground: 210 40% 98%;
+      --destructive: #f38ba8
+      --destructive-foreground: #1e1e2e;
 
-      --ring: 216 34% 17%;
+      --ring: #f5c2e7;
 
       --radius: 0.25rem;
     }
-  } */
+  }
 }
 
 @layer base {
@@ -88,4 +87,28 @@
 
 body {
   font-family: "DM Sans", sans-serif;
+}
+
+::-moz-selection { /* Code for Firefox */
+  color: #4c4f69;
+  background: #8839ef70;
+}
+
+::selection {
+  color: #4c4f69;
+  background: #8839ef70;
+}
+
+@media (prefers-color-scheme: dark) {
+  ::-moz-selection { /* Code for Firefox */
+    color: #cdd6f4;
+    background: #f5c2e720;
+  }
+
+  ::selection {
+    color: #cdd6f4;
+    background: #f5c2e720;
+  }
+
+
 }

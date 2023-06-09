@@ -16,8 +16,6 @@ export const JoinSurvey: React.FC<JoinSurveyProps> = () => {
       <Button
         variant="secondary"
         onClick={() => {
-          console.log("inputRef.current?.value", inputRef.current?.value);
-
           if (inputRef.current?.value) {
             router.push(`/${inputRef.current?.value}`);
           }

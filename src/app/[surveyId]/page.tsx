@@ -9,6 +9,11 @@ import { OptionResponse } from "@/features/Survey/OptionResponse";
 import { Button } from "@/components/Button/Button";
 import axios from "axios";
 
+export const metadata = {
+  title: "Nexux Survey",
+  description: "Nexux is a survey platform built on top of Appwrite.",
+};
+
 const SurveyPage = () => {
   const params = useParams();
 
@@ -77,7 +82,7 @@ const SurveyPage = () => {
 
   return (
     <>
-      <div className="min-h-screen flex flex-col gap-3 justify-center items-center overflow-x-hidden py-12 relative bg-background px-8">
+      <div className="min-h-screen flex flex-col gap-3 justify-center items-center overflow-x-hidden py-12 relative bg-gradient-to-t from-muted to-background px-8">
         {loading ? <p>Loading ..</p> : <>{ui}</>}
         {!loading && step > 0 && form[step - 1]}
         {!loading && step > questions.length && (

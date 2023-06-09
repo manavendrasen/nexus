@@ -6,42 +6,14 @@ import { Button } from "@/components/Button/Button";
 
 function Home() {
   return (
-    <div className="flex flex-col min-h-screen overflow-hidden">
+    <div className="flex flex-col min-h-screen overflow-hidden bg-gradient-to-t from-muted to-background">
       {/*  Site header */}
       <header className="fixed w-full z-30 md:bg-opacity-90 transition duration-300 ease-in-out">
         <div className="max-w-6xl mx-auto px-5 sm:px-6">
-          <div className="flex items-center justify-between h-16 md:h-20">
+          <div className="flex items-center justify-between h-24 md:h-28">
             {/* Site branding */}
             <div className="flex-shrink-0 mr-4">
-              {/* Logo */}
               <Link href="/" className="block">
-                {/* <svg
-                  className='w-8 h-8'
-                  viewBox='0 0 32 32'
-                  xmlns='http://www.w3.org/2000/svg'
-                >
-                  <defs>
-                    <radialGradient
-                      cx='21.152%'
-                      cy='86.063%'
-                      fx='21.152%'
-                      fy='86.063%'
-                      r='79.941%'
-                      id='header-logo'
-                    >
-                      <stop stopColor='#FF7761' offset='0%' />
-                      <stop stopColor='#FF7761' offset='25.871%' />
-                      <stop stopColor='#FF7761' offset='100%' />
-                    </radialGradient>
-                  </defs>
-                  <rect
-                    width='32'
-                    height='32'
-                    rx='16'
-                    fill='url(#header-logo)'
-                    fillRule='nonzero'
-                  />
-                </svg> */}
                 <div className="flex items-center">
                   {/* <img
                     src="https://user-images.githubusercontent.com/44477212/162623423-5472eef0-2741-4f70-9465-d9e206c314c2.png"
@@ -115,14 +87,14 @@ function Home() {
                 >
                   Build your network
                 </h1>
-                <div className="max-w-3xl mx-auto">
+                <div className="max-w-lg mx-auto">
                   <p
                     className="text-base text-muted-foreground mb-8"
                     data-aos="zoom-y-out"
                     data-aos-delay="150"
                   >
-                    With Nexus, you can connect with people <br /> who share
-                    your interests and build your network.
+                    With Nexus, you can connect with people who share your
+                    interests and build your network.
                   </p>
 
                   <div

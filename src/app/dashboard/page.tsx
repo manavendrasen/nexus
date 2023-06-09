@@ -4,15 +4,17 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useAppwrite from "@/store/AppwriteStore";
 import { Navbar } from "@/components/Navbar/Navbar";
-import { Button } from "@/components/Button/Button";
 import { Input } from "@/components/Input/Input";
-import { Plus } from "lucide-react";
 import { CreateSurvey } from "@/features/Survey/CreateSurvey";
 import useSurvey from "@/store/SurveyStore";
 import SurveyType from "@/constants/Survey";
 import { Survey } from "@/components/Survey/Survey";
 import { Skeleton } from "@/components/Skeleton/Skeleton";
-import Link from "next/link";
+
+export const metadata = {
+  title: "Nexux Dashboard",
+  description: "Nexux is a survey platform built on top of Appwrite.",
+};
 
 export default function Dashboard() {
   const { me } = useAppwrite();
@@ -73,7 +75,6 @@ export default function Dashboard() {
           <Input
             disabled={loading}
             placeholder="Search"
-            className="bg-background"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />
@@ -84,12 +85,12 @@ export default function Dashboard() {
         {/* Surveys */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-48 w-full" />
+            <Skeleton className="h-36 w-full" />
+            <Skeleton className="h-36 w-full" />
+            <Skeleton className="h-36 w-full" />
+            <Skeleton className="h-36 w-full" />
+            <Skeleton className="h-36 w-full" />
+            <Skeleton className="h-36 w-full" />
           </div>
         ) : (
           <>

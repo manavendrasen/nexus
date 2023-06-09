@@ -34,7 +34,7 @@ export const Survey: React.FC<SurveyProps> = ({
     <Link href={`survey/${slug}`}>
       <div
         className={`flex flex-col gap-1 bg-card rounded p-6 hover:border-primary hover:bg-primary hover:text-primary-foreground transition-all ease-in ${
-          status === "ACTIVE" && "border-green-500 border-b-4"
+          status === "ACTIVE" && "border-accent border-b-2"
         }`}
       >
         <h2 className="font-semibold">{title}</h2>

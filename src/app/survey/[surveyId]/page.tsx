@@ -17,9 +17,12 @@ import {
 import { AddQuestion } from "@/features/Question/AddQuestion";
 import useSurvey from "@/store/SurveyStore";
 import { Skeleton } from "@/components/Skeleton/Skeleton";
-import axios from "axios";
-import Link from "next/link";
 import useAppwrite from "@/store/AppwriteStore";
+
+export const metadata = {
+  title: "Nexux Dashboard",
+  description: "Nexux is a survey platform built on top of Appwrite.",
+};
 
 interface SurveyPageProps {}
 
@@ -75,7 +78,9 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
       break;
     case "COMPLETE":
       action = (
-        <p className="text-sm font-semibold mt-1 text-slate-500">COMPLETED</p>
+        <p className="text-sm font-semibold mt-1 text-muted-foreground">
+          COMPLETED
+        </p>
       );
       break;
   }
@@ -94,10 +99,10 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
           <section className="flex md:justify-between items-start justify-start flex-wrap gap-6">
             <div>
               <h1 className="text-3xl font-semibold mb-2">{survey?.title}</h1>
-              <p className="text-sm text-gray-700">{survey?.desc}</p>
+              <p className="text-sm text-muted-foreground">{survey?.desc}</p>
               {survey?.status === "ACTIVE" && (
                 <div
-                  className="cursor-pointer hover:border-accent hover:font-semibold my-4 px-6 py-4 font-medium text-muted-foreground text-sm bg-background rounded-md border-2 border-border w-min whitespace-nowrap flex items-center gap-2"
+                  className="cursor-pointer hover:border-accent hover:text-accent max-w-full my-4 px-6 py-4 font-medium text-muted-foreground text-sm bg-background rounded-md border-2 border-border w-min whitespace-nowrap flex items-center gap-2"
                   onClick={() => {
                     navigator.clipboard.writeText(url);
                     successAlert("Copied to clipboard");
@@ -150,7 +155,7 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
                       if (question.type === "TEXT") {
                         return (
                           <TextQuestion
-                            key={question.text}
+                            key={`${question.text}-${index}`}
                             index={index}
                             question={question}
                             allowEdit={survey?.status === "DRAFT"}
@@ -159,7 +164,7 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
                       } else if (question.type === "OPTION") {
                         return (
                           <ObjectiveQuestion
-                            key={question.text}
+                            key={`${question.text}-${index}`}
                             question={question}
                             index={index}
                             allowEdit={survey?.status === "DRAFT"}
