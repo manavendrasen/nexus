@@ -54,8 +54,8 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
       action = (
         <Button
           onClick={async () => {
-            const result = await visualize("470567");
-            console.log(result);
+            const result = await visualize(surveyId);
+            console.log(JSON.stringify(result, null, 2));
 
             // updateSurveyStatus("COMPLETE", async () => {
             //   getSurvey(surveyId);

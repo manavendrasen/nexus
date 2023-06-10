@@ -195,6 +195,7 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
 
     //  const parsedResponse = response.rep.map(res => JSON.parse(res));
     console.log("result", JSON.parse(result.response));
+    return result;
   },
 }));
 
