@@ -2,10 +2,12 @@
 
 import React, { useState } from "react";
 import Head from "next/head";
-import { useParams, useRouter } from "next/navigation";
+import Confetti from "react-confetti";
 import axios from "axios";
+import { useParams } from "next/navigation";
 
 // hooks
+import useWindowSize from "react-use/lib/useWindowSize";
 import useSurvey from "@/store/SurveyStore";
 
 // features
@@ -18,10 +20,8 @@ import { Button } from "@/components/Button/Button";
 
 const SurveyPage = () => {
   const params = useParams();
-
   const { getSurvey, survey, questions, loading, userEmail } = useSurvey();
-  const router = useRouter();
-
+  const { width, height } = useWindowSize();
   const [step, setStep] = useState(0);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [textResponses, setTextResponses] = useState(new Array<string>());
@@ -30,38 +30,46 @@ const SurveyPage = () => {
   const form = questions?.map((question, index) => {
     if (question.type === "TEXT") {
       return (
-        <TextResponse
+        <div
+          className="transition-all duration-500 ease-in-out animate-in animate-out"
           key={`${question.surveySlug}-${question.index}`}
-          question={question.text}
-          index={question.index!}
-          next={() => {
-            setStep(prev => prev + 1);
-          }}
-          handleResponse={text => {
-            setTextResponses(prev => {
-              prev.push(text);
-              return prev;
-            });
-          }}
-        />
+        >
+          <TextResponse
+            question={question.text}
+            index={question.index!}
+            next={() => {
+              setStep(prev => prev + 1);
+            }}
+            handleResponse={text => {
+              setTextResponses(prev => {
+                prev.push(text);
+                return prev;
+              });
+            }}
+          />
+        </div>
       );
     } else if (question.type === "OPTION") {
       return (
-        <OptionResponse
+        <div
+          className="transition-all duration-500 ease-in-out animate-in animate-out"
           key={`${question.surveySlug}-${question.index}`}
-          question={question.text}
-          index={question.index!}
-          option={question.options!}
-          next={() => {
-            setStep(prev => prev + 1);
-          }}
-          handleResponse={(option: number) => {
-            setOptionResponses(prev => {
-              prev.push(option);
-              return prev;
-            });
-          }}
-        />
+        >
+          <OptionResponse
+            question={question.text}
+            index={question.index!}
+            option={question.options!}
+            next={() => {
+              setStep(prev => prev + 1);
+            }}
+            handleResponse={(option: number) => {
+              setOptionResponses(prev => {
+                prev.push(option);
+                return prev;
+              });
+            }}
+          />
+        </div>
       );
     }
   });
@@ -93,7 +101,17 @@ const SurveyPage = () => {
       </Head>
       <div className="min-h-screen flex flex-col gap-3 justify-center items-center overflow-x-hidden py-12 relative bg-gradient-to-t from-muted to-background px-8">
         {loading ? <p>Loading ..</p> : <>{ui}</>}
-        {!loading && step > 0 && form[step - 1]}
+        {!loading && step > 0 && (
+          <>
+            {form[step - 1]}
+            <div
+              className="h-5 bg-accent fixed bottom-0 left-0 w-1 transition-all duration-500 ease-in-out"
+              style={{
+                width: `calc(${Math.ceil((step / questions.length) * 100)}vw)`,
+              }}
+            ></div>
+          </>
+        )}
         {!loading && step > questions.length && (
           <div className="space-y-4 text-center">
             <h2 className="text-2xl font-bold">Submit the survey!</h2>
@@ -118,28 +136,32 @@ const SurveyPage = () => {
           </div>
         )}
         {!loading && step === -1 && (
-          <div className="space-y-4 text-center">
-            <h2 className="text-2xl font-bold">
-              Thanks for participating in the survey!
-            </h2>
-            <p className="text-muted-foreground">
-              Once the survey is marked as complete, you will be able to see the
-              results.
-            </p>
-          </div>
+          <>
+            <Confetti
+              width={width}
+              height={height}
+              colors={[
+                "#f38ba8",
+                "#fab387",
+                "#a6e3a1",
+                "#89b4fa",
+                "#cba6f7",
+                "#f5c2e7",
+              ]}
+              numberOfPieces={100}
+            />
+            <div className="space-y-4 text-center">
+              <h2 className="text-2xl font-bold">
+                Thanks for participating in the survey!
+              </h2>
+              <p className="text-muted-foreground">
+                Once the survey is marked as complete, you will be able to see
+                the results.
+              </p>
+            </div>
+          </>
         )}
       </div>
-
-      <Button
-        onClick={async () => {
-          const response = await axios.get(
-            `/api/survey?surveySlug=${params.surveyId}`
-          );
-          console.log(JSON.stringify(response.data.response, null, 2));
-        }}
-      >
-        Result
-      </Button>
     </>
   );
 };

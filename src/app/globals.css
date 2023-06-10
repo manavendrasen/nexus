@@ -99,6 +99,26 @@ body {
   background: #8839ef70;
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #e6e9ef;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #7287fd;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #7287fd;
+}
+
 @media (prefers-color-scheme: dark) {
   ::-moz-selection { /* Code for Firefox */
     color: #cdd6f4;
@@ -110,5 +130,24 @@ body {
     background: #f5c2e720;
   }
 
+    /* width */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #11111b;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #b4befe;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #b4befe;
+  }
 
 }
