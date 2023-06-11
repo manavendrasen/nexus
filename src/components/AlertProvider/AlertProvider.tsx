@@ -22,15 +22,21 @@ interface AlertProviderProps {
 
 export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
   const successAlert = (msg: string) => {
-    toast.success(msg);
+    toast.success(msg, {
+      className: "toast",
+    });
   };
 
   const errorAlert = (msg: string) => {
-    toast.error(msg);
+    toast.error(msg, {
+      className: "toast",
+    });
   };
 
   const infoAlert = (msg: string) => {
-    toast.info(msg);
+    toast.info(msg, {
+      className: "toast",
+    });
   };
 
   const value = React.useMemo(
@@ -48,7 +54,7 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
       <ToastContainer
         position="top-right"
         autoClose={3000}
-        hideProgressBar
+        // hideProgressBar
         newestOnTop
         closeOnClick
         rtl={false}

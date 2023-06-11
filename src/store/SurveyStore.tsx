@@ -26,7 +26,7 @@ interface SurveyStore {
   submitSurvey: (response: Response) => void;
 
   // dashboard
-  getSurveys: () => void;
+  getSurveys: (callback?: () => void) => void;
   allMySurveys: Survey[];
   updateQuestion: (question: Question, callback?: () => void) => void;
   deleteQuestion: (question: Question, callback?: () => void) => void;
@@ -58,19 +58,32 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
   },
   setUserEmail: (email: string) => set({ userEmail: email }),
   setSurvey: (survey: Survey) => set({ survey: survey }),
-  getSurveys: async () => {
+  getSurveys: async callback => {
     set({ loading: true });
     try {
+      const me = await useAppwrite.getState().accountService?.get();
+
+      if (!me) throw new Error("User not found");
+
+      console.log("me", me.$id);
+
       const response = await useAppwrite
         .getState()
         .databaseService?.listDocuments(DATABASE_ID, COLLECTION_ID_SURVEY, [
-          Query.equal("createdBy", useAppwrite.getState().me!.$id),
+          Query.equal("createdBy", me.$id),
         ]);
       console.log("response", response);
 
       if (!response) throw new Error("Survey not found");
 
-      const fetchedSurveys = response.documents;
+      let fetchedSurveys = response.documents;
+
+      // sort fetched document by createdAt
+      fetchedSurveys.sort((a, b) => {
+        return (
+          new Date(b.$createdAt).getTime() - new Date(a.$createdAt).getTime()
+        );
+      });
 
       set({
         allMySurveys: fetchedSurveys.map(survey => ({
@@ -83,6 +96,7 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
           responseCount: survey.responseCount,
         })),
       });
+      callback && callback();
     } catch (error) {
       console.log(error);
     } finally {
@@ -92,6 +106,8 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
   getSurvey: async (slug: string) => {
     set({ loading: true });
     try {
+      console.log("slug", slug);
+
       const response = await useAppwrite
         .getState()
         .databaseService?.listDocuments(DATABASE_ID, COLLECTION_ID_SURVEY, [
@@ -100,10 +116,10 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
 
       console.log("response", response);
 
-      if (!response) throw new Error("Survey not found");
+      if (!response) throw new Error("Survey not found, response undefined");
 
       if (response.documents.length === 0) {
-        throw new Error("Survey not found");
+        throw new Error("Survey not found, responses length 0");
       }
 
       const questionResponse = await useAppwrite
@@ -171,6 +187,10 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
   createSurvey: async (survey: Survey, callback) => {
     set({ loading: true });
     try {
+      const me = await useAppwrite.getState().accountService?.get();
+
+      if (!me) throw new Error("User not found");
+
       const response = await useAppwrite
         .getState()
         .databaseService?.createDocument(
@@ -183,7 +203,7 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
             desc: survey.desc,
             responseCount: 0,
             status: survey.status,
-            createdBy: useAppwrite.getState().me?.$id,
+            createdBy: me.$id,
           }
         );
 

@@ -1,7 +1,6 @@
 import { create } from "zustand";
-import { Client, Account, ID, Databases, Models, Functions } from "appwrite";
+import { Client, Account, ID, Databases, Models } from "appwrite";
 import axios from "axios";
-import { FUNCTION_ID } from "@/constants/DatabaseIds";
 
 interface AppwriteStore {
   // appwrite services
@@ -17,6 +16,7 @@ interface AppwriteStore {
   login: (data: LoginFormState, callback?: () => void) => void;
   sendVerificationEmail: () => void;
   confirmVerificationEmail: (userId: string, secret: string) => void;
+  getMe: (callback?: () => void) => Promise<boolean>;
 
   // survey
   // createMagicURLSession: (email: string) => void;
@@ -80,11 +80,38 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
         data.name
       );
       callback && callback();
+      set({ authLoading: false });
     } catch (error) {
       console.error(error);
-      throw new Error("Could not Sign Up");
-    } finally {
       set({ authLoading: false });
+      throw new Error("Could not Sign Up");
+    }
+  },
+  getMe: async callback => {
+    set({ authLoading: true });
+    const accountService = get().accountService;
+
+    if (!accountService) {
+      throw new Error("Account service not initialized");
+    }
+
+    try {
+      const me = await accountService.get();
+      // if (!me) {
+      //   set({ authLoading: false });
+      //   console.log("User is not logged in");
+
+      //   // user is not logged in
+      //   return false;
+      // }
+      set({ me });
+      callback && callback();
+      set({ authLoading: false });
+      return true;
+    } catch (error) {
+      set({ authLoading: false });
+      console.log(error);
+      return false;
     }
   },
   login: async (data: LoginFormState, callback) => {
@@ -101,6 +128,7 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
       callback && callback();
     } catch (error) {
       console.error(error);
+      set({ authLoading: false });
       throw new Error("Could not login");
     } finally {
       set({ authLoading: false });
@@ -119,11 +147,11 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
       await accountService.createVerification(
         `${process.env.NEXT_PUBLIC_AUTH_CALLBACK_URL}/sign-up/confirm`
       );
+      set({ authLoading: false });
     } catch (error) {
       console.error(error);
-      throw new Error("Could not send verification email");
-    } finally {
       set({ authLoading: false });
+      throw new Error("Could not send verification email");
     }
   },
   confirmVerificationEmail: async (userId, secret) => {
@@ -135,11 +163,11 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
 
     try {
       await accountService.updateVerification(userId, secret);
+      set({ authLoading: false });
     } catch (error) {
       console.error(error);
-      throw new Error("Could not verify email");
-    } finally {
       set({ authLoading: false });
+      throw new Error("Could not verify email");
     }
   },
 
@@ -185,17 +213,23 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
     console.log("surveyResponses", surveyResponses);
 
     // call the function with the data
-    const functions = new Functions(get().clientService!);
-    const result = await functions.createExecution(
-      FUNCTION_ID,
-      JSON.stringify({
-        responses: surveyResponses,
-      })
-    );
+    try {
+      const result = await axios.post(
+        process.env.NEXT_PUBLIC_PLOT_API_URL!,
+        {
+          responses: surveyResponses.response,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-    //  const parsedResponse = response.rep.map(res => JSON.parse(res));
-    console.log("result", JSON.parse(result.response));
-    return result;
+      return JSON.parse(result.data.data);
+    } catch (error) {
+      console.log(error);
+    }
   },
 }));
 

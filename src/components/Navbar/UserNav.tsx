@@ -17,7 +17,7 @@ import {
 import useAppwrite from "@/store/AppwriteStore";
 
 export function UserNav() {
-  const { me } = useAppwrite();
+  const { me, accountService } = useAppwrite();
   const router = useRouter();
 
   return (
@@ -54,8 +54,9 @@ export function UserNav() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => {
-            router.push("/login");
+          onClick={async () => {
+            await accountService?.deleteSession("current");
+            router.push("/");
           }}
         >
           <LogOut className="mr-2 h-4 w-4" />

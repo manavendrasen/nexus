@@ -17,9 +17,11 @@ import { GetUserEmail } from "@/features/Survey/GetUserEmail";
 import { TextResponse } from "@/features/Survey/TextResponse";
 import { OptionResponse } from "@/features/Survey/OptionResponse";
 import { Button } from "@/components/Button/Button";
+import useAppwrite from "@/store/AppwriteStore";
 
 const SurveyPage = () => {
   const params = useParams();
+  const { visualize } = useAppwrite();
   const { getSurvey, survey, questions, loading, userEmail } = useSurvey();
   const { width, height } = useWindowSize();
   const [step, setStep] = useState(0);
@@ -93,13 +95,41 @@ const SurveyPage = () => {
   return (
     <>
       <Head>
-        <title>Nexux | Survey - {survey?.title}</title>
+        <title>Nexus | Survey - {survey?.title}</title>
         <meta
           name="description"
-          content="Nexux is a survey platform built on top of Appwrite."
+          content="Nexus is a survey platform built on top of Appwrite."
         />
       </Head>
+
       <div className="min-h-screen flex flex-col gap-3 justify-center items-center overflow-x-hidden py-12 relative bg-gradient-to-t from-muted to-background px-8">
+        <Button
+          className="absolute top-4 right-4"
+          onClick={async () => {
+            const res = await visualize(params.surveyId);
+
+            const coordinatesList = [];
+
+            for (let i = 0; i < res.length; i++) {
+              const person: any = res[i][Object.keys(res[i])[0]];
+              const coordinates = person["coordinates"];
+              coordinatesList.push({
+                x: coordinates[0],
+                y: coordinates[1],
+                data: {
+                  name: person["textResponses"][0],
+                  age: person["textResponses"][1],
+                  email: person["textResponses"][2],
+                  questionResponses: person["optionResponses"],
+                },
+              });
+            }
+
+            console.log(JSON.stringify(coordinatesList));
+          }}
+        >
+          Visualize
+        </Button>
         {loading ? <p>Loading ..</p> : <>{ui}</>}
         {!loading && step > 0 && (
           <>

@@ -6,8 +6,8 @@ import { AlertProvider } from "@/components/AlertProvider/AlertProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Nexux - Build your Network | Survey",
-  description: "Nexux is a survey platform built on top of Appwrite.",
+  title: "Nexus - Build your Network | Survey",
+  description: "Nexus is a survey platform built on top of Appwrite.",
 };
 
 export default function RootLayout({

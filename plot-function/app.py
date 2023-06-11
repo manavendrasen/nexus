@@ -65,5 +65,9 @@ def handler(event, context):
     # Output
     return {
         "message": "Success",
+        "headers": {
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Origin": "*",
+        },
         "data": json.dumps(response_body)
     }

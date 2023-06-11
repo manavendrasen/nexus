@@ -36,6 +36,9 @@
     --ring: #ea76cb;
 
     --radius: 0.25rem;
+
+    --toastify-color-progress-success: #40a02b !important;
+    --toastify-icon-color-success: #40a02b !important;
   }
 
 
@@ -71,6 +74,9 @@
       --ring: #f5c2e7;
 
       --radius: 0.25rem;
+
+      --toastify-color-progress-success: #a6e3a1 !important;
+      --toastify-icon-color-success: #a6e3a1 !important;
     }
   }
 }
@@ -119,6 +125,15 @@ body {
   background: #7287fd;
 }
 
+.toast {
+  background: #eff1f5 !important;
+  color: #4c4f69 !important;
+}
+
+.toast svg {
+  color: #4c4f69 !important;
+}
+
 @media (prefers-color-scheme: dark) {
   ::-moz-selection { /* Code for Firefox */
     color: #cdd6f4;
@@ -148,6 +163,15 @@ body {
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
     background: #b4befe;
+  }
+
+  .toast {
+    background: #313244 !important;
+    color: #cdd6f4 !important;
+  }
+
+  .toast svg {
+    color: #cdd6f4 !important;
   }
 
 }

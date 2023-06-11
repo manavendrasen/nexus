@@ -4,8 +4,8 @@ import Link from "next/link";
 import { SignUpForm } from "@/features/Auth/SignUpForm";
 
 export const metadata: Metadata = {
-  title: "Sign Up | Nexux - Build your Network",
-  description: "Nexux is a survey platform built on top of Appwrite.",
+  title: "Sign Up | Nexus - Build your Network",
+  description: "Nexus is a survey platform built on top of Appwrite.",
 };
 
 export default function SignUpPage() {

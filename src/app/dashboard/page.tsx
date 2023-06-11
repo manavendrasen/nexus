@@ -19,14 +19,16 @@ import { Skeleton } from "@/components/Skeleton/Skeleton";
 
 // types
 import SurveyType from "@/constants/Survey";
+import { useAlert } from "@/components/AlertProvider/AlertProvider";
 
 export default function Dashboard() {
-  const { me } = useAppwrite();
+  const { me, getMe, accountService, authLoading } = useAppwrite();
   const { allMySurveys, getSurveys, loading } = useSurvey();
   const [surveyData, setSurveyData] = useState<SurveyType[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   const router = useRouter();
+  const { errorAlert } = useAlert();
 
   useEffect(() => {
     const filtered = allMySurveys.filter(survey => {
@@ -42,19 +44,39 @@ export default function Dashboard() {
     }
   }, [searchTerm, surveyData, allMySurveys]);
 
-  useEffect(() => {
-    if (!me) {
-      router.push("/");
-    } else {
-      try {
-        getSurveys();
-        setSurveyData(allMySurveys);
-      } catch (error) {
-        console.log(error);
+  const getMeAndFetchSurveys = async () => {
+    // me is undefined = maybe logged in but not in state
+    try {
+      if (!me) {
+        // is isAuth is true, then user is logged in
+        const isAuth = await getMe();
+        console.log("isAuth", isAuth);
+
+        if (!isAuth) {
+          errorAlert("You must be logged in to view this page.");
+          router.push("/");
+        }
       }
+    } catch (error) {
+      // If it fails, accountService will be undefined
+      console.log(error);
+      // errorAlert("Something went wrong. Please try again later.");
     }
+
+    try {
+      getSurveys(() => {
+        console.log("fetched all services");
+        setSurveyData(allMySurveys);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getMeAndFetchSurveys();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [accountService]);
 
   return (
     <>
@@ -62,7 +84,7 @@ export default function Dashboard() {
         <title>Nexus Dashboard</title>
         <meta
           name="description"
-          content="Nexux is a survey platform built on top of Appwrite."
+          content="Nexus is a survey platform built on top of Appwrite."
         />
       </Head>
       <div className="min-h-screen relative">
@@ -87,7 +109,7 @@ export default function Dashboard() {
           </div>
 
           {/* Surveys */}
-          {loading ? (
+          {loading || authLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Skeleton className="h-36 w-full" />
               <Skeleton className="h-36 w-full" />
@@ -106,6 +128,7 @@ export default function Dashboard() {
                   </p>
                 </div>
               )}
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {surveyData.map(survey => (
                   <Survey

@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import Head from "next/head";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 // features
 import { AddQuestion } from "@/features/Question/AddQuestion";
@@ -32,20 +32,47 @@ interface SurveyPageProps {}
 
 const SurveyPage: React.FC<SurveyPageProps> = () => {
   const { surveyId } = useParams();
-  const { visualize } = useAppwrite();
+  const { visualize, databaseService, me, getMe } = useAppwrite();
   const { survey, getSurvey, questions, loading, updateSurveyStatus } =
     useSurvey();
-  const { successAlert } = useAlert();
+  const { successAlert, errorAlert } = useAlert();
+  const router = useRouter();
   const url = `${process.env.NEXT_PUBLIC_AUTH_CALLBACK_URL}/${surveyId}`;
 
-  useEffect(() => {
+  const getMeAndFetchSurvey = async () => {
+    // me is undefined = maybe logged in but not in state
+    try {
+      if (!me) {
+        // is isAuth is true, then user is logged in
+        const isAuth = await getMe();
+        console.log("isAuth", isAuth);
+
+        if (!isAuth) {
+          errorAlert("You must be logged in to view this page.");
+          router.push("/");
+        }
+      }
+    } catch (error) {
+      // If it fails, accountService will be undefined
+      console.log(error);
+      // errorAlert("Something went wrong. Please try again later.");
+    }
+
     try {
       getSurvey(surveyId);
     } catch (error) {
       console.log(error);
     }
+  };
+
+  useEffect(() => {
+    try {
+      getMeAndFetchSurvey();
+    } catch (error) {
+      console.log(error);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [databaseService]);
 
   let action;
 
@@ -55,7 +82,10 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
         <Button
           onClick={async () => {
             const result = await visualize(surveyId);
-            console.log(JSON.stringify(result, null, 2));
+
+            for (const [key, value] of Object.entries(result)) {
+              console.log(`${key}: ${value}`);
+            }
 
             // updateSurveyStatus("COMPLETE", async () => {
             //   getSurvey(surveyId);
@@ -108,7 +138,7 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
               <Skeleton className="h-6 w-[200px]" />
             </div>
           ) : (
-            <section className="flex md:justify-between items-start justify-start flex-wrap gap-6">
+            <section className="flex sm:justify-between items-start justify-start flex-wrap gap-6">
               <div>
                 <h1 className="text-3xl font-semibold mb-2">{survey?.title}</h1>
                 <p className="text-sm text-muted-foreground">{survey?.desc}</p>
@@ -117,10 +147,10 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
                     className="cursor-pointer hover:border-accent hover:text-accent max-w-full my-4 px-6 py-4 font-medium text-muted-foreground text-sm bg-background rounded-md border-2 border-border w-min whitespace-nowrap flex items-center gap-2"
                     onClick={() => {
                       navigator.clipboard.writeText(url);
-                      successAlert("Copied to clipboard");
+                      successAlert("Code copied to clipboard");
                     }}
                   >
-                    <Copy size={16} /> {url}
+                    <Copy size={16} /> {surveyId}
                   </div>
                 )}
               </div>
