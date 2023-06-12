@@ -37,6 +37,11 @@ const SurveyPage = () => {
   const [textResponses, setTextResponses] = useState(new Array<string>());
   const [optionResponses, setOptionResponses] = useState(new Array<Number>());
 
+  useEffect(() => {
+    console.log(step, questions.length);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
+
   const form = questions?.map((question, index) => {
     if (question.type === "TEXT") {
       return (
@@ -122,7 +127,7 @@ const SurveyPage = () => {
           }}
         />
       );
-    } else if (step > 0) {
+    } else if (step > 0 && step < questions.length) {
       setUi(
         <>
           {form[step - 1]}
@@ -134,7 +139,9 @@ const SurveyPage = () => {
           />
         </>
       );
-    } else if (step > questions.length) {
+    } else if (step >= questions.length) {
+      console.log("here");
+
       setUi(
         <div className="space-y-4 text-center">
           <h2 className="text-2xl font-bold">Submit the survey!</h2>
@@ -160,7 +167,6 @@ const SurveyPage = () => {
         </div>
       );
     }
-    console.log(step, loading, survey, questions.length);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, loading, survey, questions.length, responses.length]);
 

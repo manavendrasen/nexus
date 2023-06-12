@@ -9,7 +9,7 @@ export const PersonalQuestions: Question[] = [
   {
     index: 2,
     type: "TEXT",
-    text: "Describe yourself if one sentence.",
+    text: "Describe yourself in one sentence.",
   },
   {
     index: 3,
