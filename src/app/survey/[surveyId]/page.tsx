@@ -149,7 +149,7 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
               <div>
                 <h1 className="text-3xl font-semibold mb-2">{survey?.title}</h1>
                 <p className="text-sm text-muted-foreground">{survey?.desc}</p>
-                {survey?.status === "ACTIVE" && (
+                {survey?.status !== "DRAFT" && (
                   <div
                     className="cursor-pointer hover:border-accent hover:text-accent max-w-full my-4 px-6 py-4 font-medium text-muted-foreground text-sm bg-background rounded-md border-2 border-border w-min whitespace-nowrap flex items-center gap-2"
                     onClick={() => {
@@ -161,7 +161,7 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
                   </div>
                 )}
               </div>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 text-right">
                 {action}
                 {survey?.responseCount} responses
               </div>
