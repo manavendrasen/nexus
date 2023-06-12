@@ -127,7 +127,7 @@ const SurveyPage = () => {
           }}
         />
       );
-    } else if (step > 0 && step < questions.length) {
+    } else if (step > 0 && step <= questions.length) {
       setUi(
         <>
           {form[step - 1]}
@@ -139,9 +139,7 @@ const SurveyPage = () => {
           />
         </>
       );
-    } else if (step >= questions.length) {
-      console.log("here");
-
+    } else if (step > questions.length) {
       setUi(
         <div className="space-y-4 text-center">
           <h2 className="text-2xl font-bold">Submit the survey!</h2>
