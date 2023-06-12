@@ -5,6 +5,7 @@ import Response from "@/constants/Response";
 import Survey from "@/constants/Survey";
 import React, { useState } from "react";
 import { ScatterPlot } from "../ScatterPlot/ScatterPlot";
+import Image from "next/image";
 
 interface GraphGridProps {
   survey: Survey;
@@ -30,9 +31,12 @@ export const GraphGrid: React.FC<GraphGridProps> = ({
     <div className="w-full lg:container h-full flex-1 flex flex-col">
       {showHeader && (
         <header className="flex justify-start md:justify-between gap-4 flex-wrap items-center mb-12">
-          <h1 className="font-semibold cursor-pointer text-foreground">
-            Nexus
-          </h1>
+          <div className="flex items-center gap-2">
+            <Image src="/favicon-32x32.png" alt="" height={16} width={16} />
+            <p className="font-semibold cursor-pointer text-foreground">
+              Nexus
+            </p>
+          </div>
           {survey && (
             <p>
               {survey.title} (#{survey.slug})

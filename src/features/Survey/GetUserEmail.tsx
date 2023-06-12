@@ -16,6 +16,7 @@ import {
 } from "@/components/Form/Form";
 import { Input } from "@/components/Input/Input";
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 interface GetUserEmailProps {
   next: () => void;
@@ -42,7 +43,11 @@ export const GetUserEmail: React.FC<GetUserEmailProps> = ({ next }) => {
   return (
     <div className="mx-auto flex w-full flex-col space-y-6 sm:w-[350px]">
       <div className="flex flex-col space-y-4 text-center justify-center">
-        <h1 className="text-2xl font-semibold tracking-tight">Nexus</h1>
+        <div className="flex items-center justify-center gap-2">
+          <Image src="/favicon-32x32.png" alt="" height={20} width={20} />
+          <h1 className="text-2xl font-semibold tracking-tight">Nexus</h1>
+        </div>
+
         <p className="text-sm text-muted-foreground">
           Enter your email below to proceed
         </p>
