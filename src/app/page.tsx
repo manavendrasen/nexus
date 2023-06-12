@@ -8,6 +8,7 @@ import { Button } from "@/components/Button/Button";
 
 // features
 import { JoinSurvey } from "@/components/HomeComponents/JoinSurvey";
+import Image from "next/image";
 
 function Home() {
   return (
@@ -25,6 +26,12 @@ function Home() {
                     alt=""
                     width="50px"
                   /> */}
+                  <Image
+                    src="/favicon-32x32.png"
+                    alt=""
+                    height={24}
+                    width={24}
+                  />
                   <p className="ml-3 text-lg font-bold">Nexus</p>
                 </div>
               </Link>
