@@ -28,6 +28,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/Tabs/Tabs";
+import { GraphGrid } from "@/components/SurveyComponents/GraphGrid";
 
 interface SurveyPageProps {}
 
@@ -229,7 +230,7 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
                               key={`${question.text}-${index}`}
                               index={index}
                               question={question}
-                              allowEdit={survey?.status === "DRAFT"}
+                              allowEdit={false}
                             />
                           );
                         } else if (question.type === "OPTION") {
@@ -253,8 +254,14 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
                 </TabsContent>
               )}
               <TabsContent value="responses">
-                <div className="h-96 mt-8">
-                  {!loading && responses && <ScatterPlot data={responses} />}
+                <div className="mt-8 mb-8">
+                  {!loading && responses && survey && questions && (
+                    <GraphGrid
+                      questions={questions}
+                      responses={responses}
+                      survey={survey}
+                    />
+                  )}
                 </div>
 
                 {/* <pre>{JSON.stringify(responses, null, 2)}</pre> */}

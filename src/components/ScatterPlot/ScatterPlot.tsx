@@ -14,11 +14,13 @@ import { Scatter } from "react-chartjs-2";
 interface ScatterPlotProps {
   data: Response[];
   userEmail?: string;
+  onPointClick?: (data: Response) => void;
 }
 
 export const ScatterPlot: React.FC<ScatterPlotProps> = ({
   data,
   userEmail,
+  onPointClick,
 }) => {
   ChartJS.register(
     LinearScale,
@@ -42,12 +44,6 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
         enabled: true,
       },
       mode: "xy" as "xy",
-      // onZoomComplete({chart}) {
-      //   // This update is needed to display up to date zoom level in the title.
-      //   // Without this, previous zoom level is displayed.
-      //   // The reason is: title uses the same beforeUpdate hook, and is evaluated before zoom.
-      //   chart.update('none');
-      // }
     },
   };
 
@@ -70,7 +66,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
         label: "Scatter Dataset",
         data: dataForChart,
         backgroundColor: "#8839ef",
-        pointRadius: 10,
+        pointRadius: 16,
         tooltip: {
           callbacks: {
             title: function (context: any) {
@@ -143,9 +139,12 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
           //   "Zoom: " + zoomStatus(ctx.chart) + ", Pan: " + panStatus(),
         },
       },
-      // onClick(e) {
-      //   console.log(e.type);
-      // },
+      events: ["click" as "click"],
+
+      onClick(_: any, element: any) {
+        if (!element || !element[0]) return;
+        onPointClick && onPointClick(element[0].element.$context.raw.data);
+      },
     },
   };
 

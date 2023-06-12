@@ -4,11 +4,9 @@ import axios from "axios";
 import Head from "next/head";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import Confetti from "react-confetti";
 
 // hooks
 import useSurvey from "@/store/SurveyStore";
-import useWindowSize from "react-use/lib/useWindowSize";
 
 // features
 import { GetUserEmail } from "@/features/Survey/GetUserEmail";
@@ -18,6 +16,8 @@ import { Button } from "@/components/Button/Button";
 import { ScatterPlot } from "@/components/ScatterPlot/ScatterPlot";
 import { OptionResponse } from "@/features/Survey/OptionResponse";
 import { TextResponse } from "@/features/Survey/TextResponse";
+import { GraphGrid } from "@/components/SurveyComponents/GraphGrid";
+import { Thankyou } from "@/components/SurveyComponents/Thankyou";
 
 const SurveyPage = () => {
   const params = useParams();
@@ -31,7 +31,6 @@ const SurveyPage = () => {
     responses,
     getResponses,
   } = useSurvey();
-  const { width, height } = useWindowSize();
   const [step, setStep] = useState(0);
   const [ui, setUi] = useState<React.ReactNode>();
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -92,96 +91,28 @@ const SurveyPage = () => {
       if (responses && responses.length === 0) {
         getResponses(params.surveyId, () => {
           setUi(
-            <div className="container h-full flex-1 flex flex-col">
-              <header className="flex justify-between items-center mb-12">
-                <h1 className="font-semibold cursor-pointer text-foreground">
-                  Nexus
-                </h1>
-                <p>
-                  {survey.title} (#{survey.slug})
-                </p>
-              </header>
-              <main
-                className="flex-1 h-full"
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "2fr 1fr",
-                  gap: "1rem",
-                }}
-              >
-                <div>
-                  <ScatterPlot data={responses} userEmail={userEmail} />
-                </div>
-                <div className="overflow-y-scroll break-words">
-                  <pre>
-                    {JSON.stringify(questions, null, 2)}
-                    {JSON.stringify(responses, null, 2)}
-                  </pre>
-                </div>
-              </main>
-            </div>
+            <GraphGrid
+              questions={questions}
+              responses={responses}
+              survey={survey}
+              userEmail={userEmail}
+              showHeader
+            />
           );
         });
       } else {
         setUi(
-          <div className="container h-full pb-12 flex-1 flex flex-col">
-            <header className="flex justify-between items-center mb-12">
-              <h1 className="font-semibold cursor-pointer text-foreground">
-                Nexus
-              </h1>
-              <p>
-                {survey.title} (#{survey.slug})
-              </p>
-            </header>
-            <main
-              className="flex-1 h-full"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "2fr 1fr",
-                gap: "2rem",
-                wordWrap: "break-word",
-              }}
-            >
-              <div className="bg-background p-4 rounded shadow-lg">
-                <ScatterPlot data={responses} userEmail={userEmail} />
-              </div>
-              <div className="overflow-y-scroll overflow-x-clip  break-words">
-                <pre>
-                  {JSON.stringify(questions, null, 2)}
-                  {JSON.stringify(responses, null, 2)}
-                </pre>
-              </div>
-            </main>
-          </div>
+          <GraphGrid
+            questions={questions}
+            responses={responses}
+            survey={survey}
+            userEmail={userEmail}
+            showHeader
+          />
         );
       }
     } else if (step === -1) {
-      setUi(
-        <>
-          <Confetti
-            width={width}
-            height={height}
-            colors={[
-              "#f38ba8",
-              "#fab387",
-              "#a6e3a1",
-              "#89b4fa",
-              "#cba6f7",
-              "#f5c2e7",
-            ]}
-            numberOfPieces={100}
-          />
-          <div className="space-y-4 text-center">
-            <h2 className="text-2xl font-bold">
-              Thanks for participating in the survey!
-            </h2>
-            <p className="text-muted-foreground">
-              Once the survey is marked as complete, you will be able to see the
-              results.
-            </p>
-          </div>
-        </>
-      );
+      setUi(<Thankyou />);
     } else if (step === 0) {
       setUi(
         <GetUserEmail
@@ -243,7 +174,17 @@ const SurveyPage = () => {
         />
       </Head>
 
-      <div className="h-screen flex flex-col gap-3 justify-center items-center overflow-x-hidden py-12 relative bg-gradient-to-t from-muted to-background px-8">
+      <div className="min-h-screen flex flex-col gap-3 justify-center items-center overflow-x-hidden py-12 relative bg-gradient-to-t from-muted to-background px-8">
+        {/* <header className="flex justify-start md:justify-between gap-4 flex-wrap items-center mb-12">
+          <h1 className="font-semibold cursor-pointer text-foreground">
+            Nexus
+          </h1>
+          {survey && (
+            <p>
+              {survey.title} (#{survey.slug})
+            </p>
+          )}
+        </header> */}
         {ui}
       </div>
     </>
