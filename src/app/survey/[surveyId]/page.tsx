@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useParams, useRouter } from "next/navigation";
 
@@ -27,16 +27,26 @@ import {
   TabsTrigger,
 } from "@/components/Tabs/Tabs";
 import { Skeleton } from "@/components/Skeleton/Skeleton";
+import { ScatterPlot } from "@/components/ScatterPlot/ScatterPlot";
 
 interface SurveyPageProps {}
 
 const SurveyPage: React.FC<SurveyPageProps> = () => {
   const { surveyId } = useParams();
-  const { visualize, databaseService, me, getMe } = useAppwrite();
-  const { survey, getSurvey, questions, loading, updateSurveyStatus } =
-    useSurvey();
+  const { databaseService, me, getMe } = useAppwrite();
+  const {
+    survey,
+    getSurvey,
+    questions,
+    responses,
+    loading,
+    updateSurveyStatus,
+    visualize,
+    getResponses,
+  } = useSurvey();
   const { successAlert, errorAlert } = useAlert();
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState("questions");
   const url = `${process.env.NEXT_PUBLIC_AUTH_CALLBACK_URL}/${surveyId}`;
 
   const getMeAndFetchSurvey = async () => {
@@ -81,16 +91,13 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
       action = (
         <Button
           onClick={async () => {
-            const result = await visualize(surveyId);
-
-            for (const [key, value] of Object.entries(result)) {
-              console.log(`${key}: ${value}`);
-            }
-
-            // updateSurveyStatus("COMPLETE", async () => {
-            //   getSurvey(surveyId);
-
-            // });
+            successAlert("Working our magic ✨...");
+            await visualize(surveyId);
+            updateSurveyStatus("COMPLETE", async () => {
+              getSurvey(surveyId);
+              setActiveTab("responses");
+            });
+            successAlert("Survey successfully completed!");
           }}
         >
           <Check size={16} className="mr-2" /> Complete
@@ -154,22 +161,44 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
                   </div>
                 )}
               </div>
-              <div>{action}</div>
+              <div className="flex flex-col gap-4">
+                {action}
+                {survey?.responseCount} responses
+              </div>
             </section>
           )}
 
           <section className="my-8">
             <Tabs
-              defaultValue={
-                survey?.status === "COMPLETE" ? "responses" : "questions"
-              }
+              // defaultValue={
+              //   survey?.status === "COMPLETE" ? "responses" : "questions"
+              // }
+              value={activeTab}
             >
               {survey?.status === "COMPLETE" && (
                 <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger disabled={loading} value="questions">
+                  <TabsTrigger
+                    disabled={loading}
+                    value="questions"
+                    onClick={() => {
+                      setActiveTab("questions");
+                    }}
+                  >
                     Questions
                   </TabsTrigger>
-                  <TabsTrigger disabled={loading} value="responses">
+                  <TabsTrigger
+                    disabled={loading}
+                    value="responses"
+                    onClick={() => {
+                      if (
+                        responses.length === 0 ||
+                        responses[0].surveySlug !== surveyId
+                      ) {
+                        getResponses(surveyId);
+                      }
+                      setActiveTab("responses");
+                    }}
+                  >
                     Responses
                   </TabsTrigger>
                 </TabsList>
@@ -223,7 +252,13 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
                   )}
                 </TabsContent>
               )}
-              <TabsContent value="responses"></TabsContent>
+              <TabsContent value="responses">
+                <div className="h-96 mt-8">
+                  {!loading && responses && <ScatterPlot data={responses} />}
+                </div>
+
+                {/* <pre>{JSON.stringify(responses, null, 2)}</pre> */}
+              </TabsContent>
             </Tabs>
           </section>
         </div>

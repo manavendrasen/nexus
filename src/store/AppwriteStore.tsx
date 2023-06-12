@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { Client, Account, ID, Databases, Models } from "appwrite";
 import axios from "axios";
+import { COLLECTION_ID_QUESTION, DATABASE_ID } from "@/constants/DatabaseIds";
 
 interface AppwriteStore {
   // appwrite services
@@ -21,9 +22,6 @@ interface AppwriteStore {
   // survey
   // createMagicURLSession: (email: string) => void;
   // updateMagicURLSession: (userId: string, secret: string) => void;
-
-  // function
-  visualize: (surveyId: string) => Promise<any>;
 }
 
 type SignUpFormState = {
@@ -49,6 +47,7 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
   accountService: undefined,
   databaseService: undefined,
   authLoading: false,
+  loading: false,
   me: undefined,
   init: () => {
     const client = createClient();
@@ -203,34 +202,6 @@ const useAppwrite = create<AppwriteStore>()((set, get) => ({
   //     set({ authLoading: false });
   //   }
   // },
-  visualize: async surveyId => {
-    // get data from backend
-    const response = await axios.get(`/api/survey?surveySlug=${surveyId}`);
-    const surveyResponses = response.data;
-
-    // format the data
-
-    console.log("surveyResponses", surveyResponses);
-
-    // call the function with the data
-    try {
-      const result = await axios.post(
-        process.env.NEXT_PUBLIC_PLOT_API_URL!,
-        {
-          responses: surveyResponses.response,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      return JSON.parse(result.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  },
 }));
 
 export default useAppwrite;

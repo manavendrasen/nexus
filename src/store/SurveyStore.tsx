@@ -13,17 +13,19 @@ import {
 import Question from "@/constants/Question";
 import { PersonalQuestions } from "@/constants/PersonalQuestions";
 import Response from "@/constants/Response";
+import axios from "axios";
 
 interface SurveyStore {
   loading: boolean;
   userEmail: string;
   questions: Question[];
+  responses: Response[];
   survey?: Survey;
 
   setUserEmail: (email: string) => void;
   setSurvey: (survey: Survey) => void;
   getSurvey: (slug: string) => void;
-  submitSurvey: (response: Response) => void;
+  updateSurveyResponseCount: () => void;
 
   // dashboard
   getSurveys: (callback?: () => void) => void;
@@ -34,6 +36,9 @@ interface SurveyStore {
   addQuestion: (question: Question) => void;
   createQuestion: (question: Question) => void;
   updateSurveyStatus: (status: string, callback: () => void) => void;
+  getResponses: (surveyId: string, callback?: () => void) => void;
+  // function
+  visualize: (surveyId: string) => Promise<any>;
 }
 
 const useSurvey = create<SurveyStore>()((set, get) => ({
@@ -41,6 +46,7 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
   userEmail: "",
   survey: undefined,
   questions: [],
+  responses: [],
   allMySurveys: [],
   addQuestion: (question: Question) => {
     set({
@@ -258,22 +264,23 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
     }
   },
 
-  submitSurvey: async res => {
+  updateSurveyResponseCount: async () => {
     set({ loading: true });
     try {
-      const response = await useAppwrite
-        .getState()
-        .databaseService?.updateDocument(
-          DATABASE_ID,
-          COLLECTION_ID_RESPONSE,
-          ID.unique(),
-          {
-            surveySlug: get().survey?.slug,
-            userEmail: get().userEmail,
-            textResponses: res.textResponses,
-            optionResponses: res.optionResponses,
-          }
-        );
+      // const response = await useAppwrite
+      //   .getState()
+      //   .databaseService?.updateDocument(
+      //     DATABASE_ID,
+      //     COLLECTION_ID_RESPONSE,
+      //     ID.unique(),
+      //     {
+      //       surveySlug: get().survey?.slug,
+      //       userEmail: get().userEmail,
+      //       textResponses: res.textResponses,
+      //       optionResponses: res.optionResponses,
+      //       coordinates: res.coordinates,
+      //     }
+      //   );
 
       const surveyResponse = await useAppwrite
         .getState()
@@ -286,7 +293,6 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
           }
         );
 
-      console.log("response", response);
       console.log("surveyResponse", surveyResponse);
     } catch (error) {
       console.log(error);
@@ -356,6 +362,125 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
       console.log(error);
     } finally {
       set({ loading: false });
+    }
+  },
+  getResponses: async (surveyId: string, callback) => {
+    set({ loading: true });
+    try {
+      const response = await useAppwrite
+        .getState()
+        .databaseService?.listDocuments(DATABASE_ID, COLLECTION_ID_RESPONSE, [
+          Query.equal("surveySlug", surveyId),
+        ]);
+
+      if (!response) throw new Error("Response not found");
+
+      const formattedResponses = response.documents.map(res => {
+        return {
+          name: res.name,
+          surveySlug: res.surveySlug,
+          userEmail: res.userEmail,
+          textResponses: res.textResponses,
+          optionResponses: res.optionResponses,
+          coordinates: res.coordinates,
+        };
+      });
+
+      set({ responses: formattedResponses });
+      callback && callback();
+      set({ loading: false });
+    } catch (error) {
+      set({ loading: false });
+      console.log(error);
+    }
+  },
+  visualize: async surveyId => {
+    // get data from backend
+    set({ loading: true });
+    const response = await axios.get(`/api/survey?surveySlug=${surveyId}`);
+    const surveyResponses = response.data;
+
+    // format the data
+    console.log("surveyResponses", surveyResponses);
+
+    type responseObjType = {
+      [email: string]: {
+        textResponses: string[];
+        optionResponses: number[];
+        coordinates: number[];
+      };
+    };
+
+    // call the lambda function with the data
+    let responseWithCoordinates: responseObjType[] = [];
+    try {
+      const result = await axios.post(
+        process.env.NEXT_PUBLIC_PLOT_API_URL!,
+        {
+          responses: surveyResponses.response,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // now we have coordinates
+      responseWithCoordinates = JSON.parse(result.data.data);
+
+      console.log("responseWithCoordinates", responseWithCoordinates);
+
+      // save the data to the database
+      try {
+        const databaseService = useAppwrite.getState().databaseService;
+
+        if (!databaseService) {
+          set({ loading: false });
+          throw new Error("Database service not initialized");
+        }
+
+        // promise array
+        const responsesList: Response[] = [];
+        const ResponseDatabasePromises = responseWithCoordinates.map(
+          (responseObj: responseObjType) => {
+            const email = Object.keys(responseObj)[0];
+            const responseObjValues = responseObj[email];
+            const payload: Response = {
+              surveySlug: surveyId,
+              userEmail: email,
+              textResponses: responseObjValues["textResponses"],
+              optionResponses: responseObjValues["optionResponses"],
+              coordinates: responseObjValues["coordinates"],
+              name: responseObjValues["textResponses"][0],
+            };
+
+            responsesList.push(payload);
+            return databaseService.createDocument(
+              DATABASE_ID,
+              COLLECTION_ID_RESPONSE,
+              ID.unique(),
+              payload
+            );
+          }
+        );
+
+        set({ responses: responsesList });
+
+        // wait for all promises to resolve
+        const response = await Promise.all(ResponseDatabasePromises);
+
+        console.log("ResponseDatabasePromises", response);
+
+        set({ loading: false });
+        return responseWithCoordinates;
+      } catch (error) {
+        set({ loading: false });
+        console.log(error);
+      }
+    } catch (error) {
+      set({ loading: false });
+      console.log(error);
     }
   },
 }));
