@@ -254,7 +254,7 @@ const SurveyPage: React.FC<SurveyPageProps> = () => {
                 </TabsContent>
               )}
               <TabsContent value="responses">
-                <div className="mt-8 mb-8">
+                <div className="mt-8 pb-8">
                   {!loading && responses && survey && questions && (
                     <GraphGrid
                       questions={questions}
