@@ -10,7 +10,7 @@ interface AuthRedirectProps {
 }
 
 export const AuthRedirect: React.FC<AuthRedirectProps> = ({ children }) => {
-  const { getMe, accountService } = useAppwrite();
+  const { getMe, accountService, authLoading } = useAppwrite();
   const router = useRouter();
   const { successAlert } = useAlert();
 
@@ -37,5 +37,9 @@ export const AuthRedirect: React.FC<AuthRedirectProps> = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountService]);
 
-  return <>{children}</>;
+  return (
+    <div className={`${authLoading && "pointer-events-none cursor-wait"}`}>
+      {children}
+    </div>
+  );
 };
