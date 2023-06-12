@@ -1,15 +1,15 @@
-import React from "react";
+import Response from "@/constants/Response";
 import {
   Chart as ChartJS,
+  Legend,
+  LineElement,
   LinearScale,
   PointElement,
-  LineElement,
   Tooltip,
-  Legend,
 } from "chart.js";
-import { Scatter } from "react-chartjs-2";
 import zoomPlugin from "chartjs-plugin-zoom";
-import Response from "@/constants/Response";
+import React from "react";
+import { Scatter } from "react-chartjs-2";
 
 interface ScatterPlotProps {
   data: Response[];
@@ -169,18 +169,18 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
 //         display: false,
 //       },
 //     },
-    // scales: {
-    //   x: {
-    //     display: false,
-    //     type: 'linear',
-    //     position: 'bottom'
-    //   },
-    //   y: {
-    //     display: false,
-    //     type: 'linear',
+// scales: {
+//   x: {
+//     display: false,
+//     type: 'linear',
+//     position: 'bottom'
+//   },
+//   y: {
+//     display: false,
+//     type: 'linear',
 
-    //   }
-    // }
+//   }
+// }
 //   }
 // };
 // const data = {
@@ -217,14 +217,10 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
 
 // -------------------------------
 
-
-
-
-
 // const config = {
 //   type: 'scatter',
 //   data: data,
-  
+
 //   options: {
 //   scales: {
 //         x: {
@@ -254,7 +250,7 @@ export const ScatterPlot: React.FC<ScatterPlotProps> = ({
 //       legend: {
 //         display: false,
 //       },
-      
+
 //       zoom: zoomOptions,
 //       title: {
 //         display: true,

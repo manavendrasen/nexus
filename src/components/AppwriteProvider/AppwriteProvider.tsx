@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect } from "react";
 import useAppwrite from "@/store/AppwriteStore";
+import React, { useEffect } from "react";
 
 interface AppwriteProviderProps {
   children: React.ReactNode;

@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect } from "react";
 import useAppwrite from "@/store/AppwriteStore";
 import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 import { useAlert } from "../AlertProvider/AlertProvider";
 
 interface AuthRedirectProps {

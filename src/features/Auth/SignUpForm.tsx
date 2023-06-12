@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
-import * as z from "zod";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
-import { FiCheckCircle } from "react-icons/fi";
+import { Alert, AlertDescription, AlertTitle } from "@/components/Alert/Alert";
+import { Button } from "@/components/Button/Button";
 import {
   Form,
   FormControl,
@@ -13,12 +14,10 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/Form/Form";
-import { Button } from "@/components/Button/Button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/Alert/Alert";
 import { Input } from "@/components/Input/Input";
 
-import useAppwrite from "@/store/AppwriteStore";
 import { useAlert } from "@/components/AlertProvider/AlertProvider";
+import useAppwrite from "@/store/AppwriteStore";
 
 export const SignUpForm = () => {
   const [isSignUpComplete, setIsSignUpComplete] = useState(false);

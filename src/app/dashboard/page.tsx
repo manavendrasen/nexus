@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 // features
 import { CreateSurvey } from "@/features/Survey/CreateSurvey";
@@ -12,14 +12,14 @@ import useAppwrite from "@/store/AppwriteStore";
 import useSurvey from "@/store/SurveyStore";
 
 // ui
-import { Navbar } from "@/components/Navbar/Navbar";
 import { Input } from "@/components/Input/Input";
-import { Survey } from "@/components/Survey/Survey";
+import { Navbar } from "@/components/Navbar/Navbar";
 import { Skeleton } from "@/components/Skeleton/Skeleton";
+import { Survey } from "@/components/Survey/Survey";
 
 // types
-import SurveyType from "@/constants/Survey";
 import { useAlert } from "@/components/AlertProvider/AlertProvider";
+import SurveyType from "@/constants/Survey";
 
 export default function Dashboard() {
   const { me, getMe, accountService, authLoading } = useAppwrite();

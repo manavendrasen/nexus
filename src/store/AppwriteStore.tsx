@@ -1,7 +1,5 @@
+import { Account, Client, Databases, ID, Models } from "appwrite";
 import { create } from "zustand";
-import { Client, Account, ID, Databases, Models } from "appwrite";
-import axios from "axios";
-import { COLLECTION_ID_QUESTION, DATABASE_ID } from "@/constants/DatabaseIds";
 
 interface AppwriteStore {
   // appwrite services

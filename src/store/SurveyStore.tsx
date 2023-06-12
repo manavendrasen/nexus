@@ -1,18 +1,12 @@
-import { create } from "zustand";
 import { ID, Query } from "appwrite";
+import { create } from "zustand";
 import useAppwrite from "./AppwriteStore";
 
 // types and constants
-import Survey from "@/constants/Survey";
-import {
-  COLLECTION_ID_QUESTION,
-  COLLECTION_ID_RESPONSE,
-  COLLECTION_ID_SURVEY,
-  DATABASE_ID,
-} from "@/constants/DatabaseIds";
-import Question from "@/constants/Question";
 import { PersonalQuestions } from "@/constants/PersonalQuestions";
+import Question from "@/constants/Question";
 import Response from "@/constants/Response";
+import Survey from "@/constants/Survey";
 import axios from "axios";
 
 interface SurveyStore {
@@ -75,9 +69,11 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
 
       const response = await useAppwrite
         .getState()
-        .databaseService?.listDocuments(DATABASE_ID, COLLECTION_ID_SURVEY, [
-          Query.equal("createdBy", me.$id),
-        ]);
+        .databaseService?.listDocuments(
+          process.env.NEXT_PUBLIC_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_COLLECTION_ID_SURVEY!,
+          [Query.equal("createdBy", me.$id)]
+        );
       console.log("response", response);
 
       if (!response) throw new Error("Survey not found");
@@ -116,9 +112,11 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
 
       const response = await useAppwrite
         .getState()
-        .databaseService?.listDocuments(DATABASE_ID, COLLECTION_ID_SURVEY, [
-          Query.equal("slug", slug),
-        ]);
+        .databaseService?.listDocuments(
+          process.env.NEXT_PUBLIC_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_COLLECTION_ID_SURVEY!,
+          [Query.equal("slug", slug)]
+        );
 
       console.log("response", response);
 
@@ -130,9 +128,11 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
 
       const questionResponse = await useAppwrite
         .getState()
-        .databaseService?.listDocuments(DATABASE_ID, COLLECTION_ID_QUESTION, [
-          Query.equal("surveySlug", slug),
-        ]);
+        .databaseService?.listDocuments(
+          process.env.NEXT_PUBLIC_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_COLLECTION_ID_QUESTION!,
+          [Query.equal("surveySlug", slug)]
+        );
       console.log("questionResponse", questionResponse);
 
       const fetchedQuestions = questionResponse?.documents.map(question => ({
@@ -172,8 +172,8 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
       const response = await useAppwrite
         .getState()
         .databaseService?.createDocument(
-          DATABASE_ID,
-          COLLECTION_ID_QUESTION,
+          process.env.NEXT_PUBLIC_DATABASE_ID!!,
+          process.env.NEXT_PUBLIC_COLLECTION_ID_QUESTION!,
           ID.unique(),
           {
             index: Number(question.index),
@@ -200,8 +200,8 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
       const response = await useAppwrite
         .getState()
         .databaseService?.createDocument(
-          DATABASE_ID,
-          COLLECTION_ID_SURVEY,
+          process.env.NEXT_PUBLIC_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_COLLECTION_ID_SURVEY!,
           survey.slug,
           {
             slug: survey.slug,
@@ -217,8 +217,8 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
         return useAppwrite
           .getState()
           .databaseService?.createDocument(
-            DATABASE_ID,
-            COLLECTION_ID_QUESTION,
+            process.env.NEXT_PUBLIC_DATABASE_ID!,
+            process.env.NEXT_PUBLIC_COLLECTION_ID_QUESTION!,
             ID.unique(),
             {
               index: Number(question.index),
@@ -248,8 +248,8 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
       const response = await useAppwrite
         .getState()
         .databaseService?.updateDocument(
-          DATABASE_ID,
-          COLLECTION_ID_SURVEY,
+          process.env.NEXT_PUBLIC_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_COLLECTION_ID_SURVEY!,
           get().survey?.slug!,
           {
             status,
@@ -270,8 +270,8 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
       // const response = await useAppwrite
       //   .getState()
       //   .databaseService?.updateDocument(
-      //     DATABASE_ID,
-      //     COLLECTION_ID_RESPONSE,
+      //     process.env.NEXT_PUBLIC_DATABASE_ID!,
+      //     process.env.NEXT_PUBLIC_COLLECTION_ID_RESPONSE!,
       //     ID.unique(),
       //     {
       //       surveySlug: get().survey?.slug,
@@ -285,8 +285,8 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
       const surveyResponse = await useAppwrite
         .getState()
         .databaseService?.updateDocument(
-          DATABASE_ID,
-          COLLECTION_ID_SURVEY,
+          process.env.NEXT_PUBLIC_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_COLLECTION_ID_SURVEY!,
           get().survey?.slug!,
           {
             responseCount: get().survey?.responseCount! + 1,
@@ -305,10 +305,14 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
     try {
       const questionResponse = await useAppwrite
         .getState()
-        .databaseService?.listDocuments(DATABASE_ID, COLLECTION_ID_QUESTION, [
-          Query.equal("surveySlug", question.surveySlug!),
-          Query.equal("index", question.index!),
-        ]);
+        .databaseService?.listDocuments(
+          process.env.NEXT_PUBLIC_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_COLLECTION_ID_QUESTION!,
+          [
+            Query.equal("surveySlug", question.surveySlug!),
+            Query.equal("index", question.index!),
+          ]
+        );
 
       if (!questionResponse) throw new Error("Question not found");
 
@@ -317,8 +321,8 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
       const response = await useAppwrite
         .getState()
         .databaseService?.updateDocument(
-          DATABASE_ID,
-          COLLECTION_ID_QUESTION,
+          process.env.NEXT_PUBLIC_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_COLLECTION_ID_QUESTION!,
           questionId,
           {
             index: Number(question.index),
@@ -340,10 +344,14 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
     try {
       const questionResponse = await useAppwrite
         .getState()
-        .databaseService?.listDocuments(DATABASE_ID, COLLECTION_ID_QUESTION, [
-          Query.equal("surveySlug", question.surveySlug!),
-          Query.equal("index", question.index!),
-        ]);
+        .databaseService?.listDocuments(
+          process.env.NEXT_PUBLIC_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_COLLECTION_ID_QUESTION!,
+          [
+            Query.equal("surveySlug", question.surveySlug!),
+            Query.equal("index", question.index!),
+          ]
+        );
 
       if (!questionResponse) throw new Error("Question not found");
 
@@ -352,8 +360,8 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
       const response = await useAppwrite
         .getState()
         .databaseService?.deleteDocument(
-          DATABASE_ID,
-          COLLECTION_ID_QUESTION,
+          process.env.NEXT_PUBLIC_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_COLLECTION_ID_QUESTION!,
           questionId
         );
       console.log("response", response);
@@ -369,9 +377,11 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
     try {
       const response = await useAppwrite
         .getState()
-        .databaseService?.listDocuments(DATABASE_ID, COLLECTION_ID_RESPONSE, [
-          Query.equal("surveySlug", surveyId),
-        ]);
+        .databaseService?.listDocuments(
+          process.env.NEXT_PUBLIC_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_COLLECTION_ID_RESPONSE!,
+          [Query.equal("surveySlug", surveyId)]
+        );
 
       if (!response) throw new Error("Response not found");
 
@@ -457,8 +467,8 @@ const useSurvey = create<SurveyStore>()((set, get) => ({
 
             responsesList.push(payload);
             return databaseService.createDocument(
-              DATABASE_ID,
-              COLLECTION_ID_RESPONSE,
+              process.env.NEXT_PUBLIC_DATABASE_ID!,
+              process.env.NEXT_PUBLIC_COLLECTION_ID_RESPONSE!,
               ID.unique(),
               payload
             );

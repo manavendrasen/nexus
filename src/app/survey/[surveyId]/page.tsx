@@ -1,33 +1,33 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 // features
 import { AddQuestion } from "@/features/Question/AddQuestion";
 
 // hooks
 import { useAlert } from "@/components/AlertProvider/AlertProvider";
-import useSurvey from "@/store/SurveyStore";
 import useAppwrite from "@/store/AppwriteStore";
+import useSurvey from "@/store/SurveyStore";
 
 // icons
 import { Check, Copy, Save } from "lucide-react";
 
 // ui
+import { Button } from "@/components/Button/Button";
 import { Navbar } from "@/components/Navbar/Navbar";
 import { ObjectiveQuestion } from "@/components/Question/ObjectiveQuestion";
 import { TextQuestion } from "@/components/Question/TextQuestion";
-import { Button } from "@/components/Button/Button";
+import { ScatterPlot } from "@/components/ScatterPlot/ScatterPlot";
+import { Skeleton } from "@/components/Skeleton/Skeleton";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/components/Tabs/Tabs";
-import { Skeleton } from "@/components/Skeleton/Skeleton";
-import { ScatterPlot } from "@/components/ScatterPlot/ScatterPlot";
 
 interface SurveyPageProps {}
 

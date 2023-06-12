@@ -1,5 +1,5 @@
-import Redis from "ioredis";
 import { getRedisUrl } from "@/lib/Redis";
+import Redis from "ioredis";
 import { NextRequest, NextResponse } from "next/server";
 
 const redis = new Redis(getRedisUrl());

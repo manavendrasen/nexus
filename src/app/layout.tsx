@@ -1,7 +1,7 @@
-import "./globals.css";
-import { Inter } from "next/font/google";
-import { AppwriteProvider } from "@/components/AppwriteProvider/AppwriteProvider";
 import { AlertProvider } from "@/components/AlertProvider/AlertProvider";
+import { AppwriteProvider } from "@/components/AppwriteProvider/AppwriteProvider";
+import { Inter } from "next/font/google";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -1,16 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 // hooks
-import useAppwrite from "@/store/AppwriteStore";
 import { useAlert } from "@/components/AlertProvider/AlertProvider";
+import useAppwrite from "@/store/AppwriteStore";
 
 // ui
-import { Button } from "@/components/Button/Button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/Alert/Alert";
+import { Button } from "@/components/Button/Button";
 
 export const ConfirmVerificationEmailForm = () => {
   const [isVerificationComplete, setIsVerificationComplete] = useState(false);

@@ -1,7 +1,7 @@
 "use client";
 
+import { LogOut, Settings, User } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { CreditCard, LogOut, PlusCircle, Settings, User } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/Avatar/Avatar";
 import { Button } from "@/components/Button/Button";

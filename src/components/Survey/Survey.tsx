@@ -1,6 +1,6 @@
+import { Link2 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { Link2 } from "lucide-react";
 
 interface SurveyProps {
   title: string;

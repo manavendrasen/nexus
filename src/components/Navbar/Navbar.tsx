@@ -1,6 +1,6 @@
+import Link from "next/link";
 import React from "react";
 import { UserNav } from "./UserNav";
-import Link from "next/link";
 
 interface NavbarProps {
   title?: string | React.ReactNode;

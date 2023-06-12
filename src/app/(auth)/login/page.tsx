@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
 
-import { LoginForm } from "@/features/Auth/LoginForm";
 import { AuthRedirect } from "@/components/AuthRedirect/AuthRedirect";
+import { LoginForm } from "@/features/Auth/LoginForm";
 
 export const metadata: Metadata = {
   title: "Login | Nexus - Build your Network",
