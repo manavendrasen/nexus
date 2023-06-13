@@ -1,7 +1,7 @@
 # Nexus - Networking with Data-Driven Surveys
 
 ### Demo Video
-[![Demo](https://github.com/manavendrasen/nexus/assets/26283488/212d81d4-bb31-4c4a-81d5-89bcaed25bd4)](https://youtu.be/nx5RGF9URL4)
+https://github.com/manavendrasen/nexus/assets/26283488/6681384d-e10f-4a4c-99a1-45ec5cef77ba
 
 Blog - [Nexus - Networking with Data-Driven Surveys](https://blog.manavendrasen.com/nexus-networking-with-data-driven-serveys)
 
